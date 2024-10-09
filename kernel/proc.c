@@ -5,10 +5,13 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "pstat.h"
 
 struct cpu cpus[NCPU];
 
 struct proc proc[NPROC];
+
+const uint64 INITIAL_TICKETS = 1;
 
 struct proc *initproc;
 
@@ -251,6 +254,9 @@ userinit(void)
 
   p->state = RUNNABLE;
 
+  // sets the initial number of tickets
+  p->tickets = INITIAL_TICKETS;
+
   release(&p->lock);
 }
 
@@ -321,6 +327,9 @@ fork(void)
   acquire(&np->lock);
   np->state = RUNNABLE;
   release(&np->lock);
+
+  // Copy the tickets from the parent
+  np->tickets = p->tickets;
 
   return pid;
 }
@@ -434,6 +443,16 @@ wait(uint64 addr)
   }
 }
 
+// Value to generate the random value 
+uint64 lfsr = 0xACE1u;
+// Generate a random value between 0 and max-1 
+uint64
+random(uint64 max){
+  uint64 bit = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
+  lfsr = (lfsr >> 1) | (bit << 15);
+  return lfsr % max;
+}
+
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
 // Scheduler never returns.  It loops, doing:
@@ -455,9 +474,26 @@ scheduler(void)
     intr_on();
 
     int found = 0;
+
+    // We calculate how many tickets we have in the lottery
+    uint64 total_tickets = 0;
+    for (p = proc; p < &proc[NPROC]; p++)
+      if (p->state == RUNNABLE)
+        total_tickets += p->tickets;
+
+    // Generate the winner number
+    uint64 winner = random(total_tickets);
+    uint64 current_ticket_value = 0;
     for(p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
       if(p->state == RUNNABLE) {
+        // Accumulate the tickets 
+        current_ticket_value += p->tickets;
+        // Check if the current process is the winner
+        if (current_ticket_value <= winner){
+          release(&p->lock);
+          continue;
+        }
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it
         // before jumping back to us.
@@ -469,8 +505,14 @@ scheduler(void)
         // It should have changed its p->state before coming back.
         c->proc = 0;
         found = 1;
+        // Add the tick to the process
+        p->ticks++;
       }
       release(&p->lock);
+      // Once we have finished the execution of a process, we need to reestart the 
+      // lottery process
+      if (found == 1)
+        break;
     }
     if(found == 0) {
       // nothing to run; stop running on this core until an interrupt.
@@ -691,5 +733,16 @@ procdump(void)
       state = "???";
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
+  }
+}
+
+void
+fillpstats(struct pstat * pstats)
+{
+  for(uint64 i = 0; i < NPROC; i++){
+    pstats->inuse[i] = proc[i].state != UNUSED;
+    pstats->tickets[i] = proc[i].tickets;
+    pstats->pid[i] = proc[i].pid;
+    pstats->ticks[i] = proc[i].ticks; 
   }
 }
