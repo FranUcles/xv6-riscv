@@ -1,3 +1,8 @@
+#ifndef _PROC_H_
+#define _PROC_H_
+#include "vma.h"
+#include "spinlock.h"
+#include "sleeplock.h"
 // Saved registers for kernel context switches.
 struct context {
   uint64 ra;
@@ -105,5 +110,7 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   uint64 tickets;	             // Process tickets
-  uint64 ticks;                //  Process tickts 
+  uint64 ticks;                // Process tickts 
+  struct vma vma_list;         // VMA 
 };
+#endif

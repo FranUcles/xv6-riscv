@@ -3,8 +3,12 @@
 #include "memlayout.h"
 #include "riscv.h"
 #include "spinlock.h"
+#include "fs.h"
+#include "sleeplock.h"
 #include "proc.h"
 #include "defs.h"
+#include "fcntl.h"
+#include "file.h"
 
 struct spinlock tickslock;
 uint ticks;
@@ -65,6 +69,41 @@ usertrap(void)
     intr_on();
 
     syscall();
+  } else if(r_scause() == 13 || r_scause() == 15){
+    // Get the fault page address
+    uint64 fault_addr = r_stval();
+    // Check if the address is valid
+    /*
+    if (fault_addr < 0 || fault_addr > p->sz){
+      setkilled(p);
+      goto finished;
+    }
+    */
+    // Get the valid VMA
+    int valid_vma = vma_find(&(p->vma_list), fault_addr);
+    if (valid_vma == -1){
+      setkilled(p);
+      goto finished;
+    }
+    // Check if the fault was caused by a WRITE on a protected page
+    int can_write = p->vma_list.prot[valid_vma] & PROT_WRITE; 
+    if (r_scause() == 15 && can_write == 0){
+      setkilled(p);
+      goto finished;
+    }
+    // Get a new physical page
+    uint64 new_physical_addr = (uint64) kalloc();
+    // Clear the page 
+    memset((char *)new_physical_addr, 0, PGSIZE);
+    // Get the page address of the virtual address 
+    uint64 fault_page_addr = PGROUNDDOWN(fault_addr);
+    // Set the physical page into the virtual address space
+    int perms = PTE_V | PTE_U | PTE_R | (can_write == 1 ? PTE_W : PTE_W); // unknown the PTE_W ALWAYS TRUE 
+    mappages(p->pagetable, fault_page_addr, PGSIZE, new_physical_addr, perms);
+    // Read the content of the file in the VMA
+    int page_offset = fault_page_addr - p->vma_list.addr[valid_vma];
+    struct file* mapped_file = p->vma_list.file[valid_vma];
+    readi(mapped_file->ip, 1, fault_page_addr, p->vma_list.offset[valid_vma] + page_offset, PGSIZE);
   } else if((which_dev = devintr()) != 0){
     // ok
   } else {
@@ -72,7 +111,7 @@ usertrap(void)
     printf("            sepc=0x%lx stval=0x%lx\n", r_sepc(), r_stval());
     setkilled(p);
   }
-
+finished:
   if(killed(p))
     exit(-1);
 

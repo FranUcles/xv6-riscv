@@ -22,6 +22,7 @@ extern void forkret(void);
 static void freeproc(struct proc *p);
 
 extern char trampoline[]; // trampoline.S
+extern void vma_free(struct vma * vma, struct proc * p);
 
 // helps ensure that wakeups of wait()ing
 // parents are not lost. helps obey the
@@ -58,6 +59,7 @@ procinit(void)
       initlock(&p->lock, "proc");
       p->state = UNUSED;
       p->kstack = KSTACK((int) (p - proc));
+      p->vma_list.bottom_addr = INITIAL_BOTTOM_ADDR;
   }
 }
 
@@ -161,6 +163,7 @@ freeproc(struct proc *p)
   if(p->trapframe)
     kfree((void*)p->trapframe);
   p->trapframe = 0;
+  vma_free(&(p->vma_list), p);
   if(p->pagetable)
     proc_freepagetable(p->pagetable, p->sz);
   p->pagetable = 0;
@@ -173,7 +176,6 @@ freeproc(struct proc *p)
   p->xstate = 0;
   p->state = UNUSED;
 }
-
 // Create a user page table for a given process, with no user memory,
 // but with trampoline and trapframe pages.
 pagetable_t

@@ -503,3 +503,55 @@ sys_pipe(void)
   }
   return 0;
 }
+
+uint64
+sys_mmap(void){
+  int addr, length, prot, flags, fd, offset;
+  struct file * mf;
+
+  argint(0, &addr);
+  if (addr < 0)
+    return -1; // Cannot map a negattive amount of bytes
+
+  argint(1, &length);
+  if (length < 0)
+    return -1;  //Cannot map a negative amount of bytes.
+
+  argint(2, &prot);
+  if ((prot < 0) || (prot > (PROT_READ | PROT_WRITE)))
+    return -1;  //Undefined protection argument.
+
+  argint(3, &flags);
+  if ((flags != MAP_PRIVATE) && (flags != MAP_SHARED))
+    return -1;  //Undefined flags.
+
+  if (argfd(4, &fd, &mf) < 0)
+    return -1;
+
+  argint(5, &offset);
+  if (offset < 0 )
+    return -1; // Cannot selecte a negative offset
+  // Check we are not trying to map a readonly file on a read/write map
+  // when we are on a SHARED mapping
+  if (flags == MAP_SHARED){
+    int can_write_map = (prot & PROT_WRITE);
+    int can_write_file = (mf->writable == 1);
+    if (!can_write_file && can_write_map)
+      return -1;
+  }
+  uint64 correct_mapped = mmap(addr, length, prot, flags, fd, mf, offset);
+  return correct_mapped;
+}
+
+uint64
+sys_munmap(void){
+  uint64 addr;
+  int length;
+  argaddr(0, &addr);
+  if (addr < 0)
+    return -1;
+  argint(1, &length);
+  if (length < 0)
+    return -1;
+  return munmap(addr, length);
+}

@@ -180,3 +180,64 @@ filewrite(struct file *f, uint64 addr, int n)
   return ret;
 }
 
+uint64
+mmap(uint64 addr, int length, int prot, int flags, int fd, struct file* file, int offset){
+ struct proc *p = myproc();
+ int free_vma_index = vma_find_free(&(p->vma_list));
+ // In case there is no free VMA, we return error 
+ if (free_vma_index == -1)
+    return -1;
+ if (addr == 0){
+    // Select the new virtual address
+    addr = vma_get_new_addr(&(p->vma_list), length); 
+  }
+ // Increase the references to the file
+ filedup(file);
+ // We fill the VMA 
+ int correct_filled = vma_fill_vma(&(p->vma_list), free_vma_index, addr, length, prot, flags, fd, offset, file);
+ if (correct_filled == -1)
+    return -1;
+ return addr; 
+}
+
+int 
+munmap(uint64 addr, int length){
+  struct proc *p = myproc();
+  // Search which is the VMA we want to unmap
+  int vma_index = vma_find(&(p->vma_list), addr);
+  // Find the page address we want to unmap
+  uint64 page_addr = PGROUNDDOWN(addr);
+  // Check if the unmap is at the beginning, the end or the middle
+  if (p->vma_list.addr[vma_index] == page_addr){
+    // We are at the beginning of the mapping
+    int unmapped_length = vma_free_pages(&(p->vma_list), vma_index, page_addr, addr + length, p->pagetable);
+    p->vma_list.addr[vma_index] += unmapped_length;
+    p->vma_list.length[vma_index] -= unmapped_length;
+    p->vma_list.offset[vma_index] += unmapped_length;
+  } else if (p->vma_list.addr[vma_index] + p->vma_list.length[vma_index] ==
+             page_addr + length){
+    // We are at the end of the mapping 
+    int unmapped_length = vma_free_pages(&(p->vma_list), vma_index, page_addr, page_addr + length, p->pagetable);
+    p->vma_list.length[vma_index] -= unmapped_length;
+  } else {
+    // We are at the middle of the mapping
+    // Search if there is another empty vma 
+    int new_vma_index = vma_find_free(&(p->vma_list));
+    if (new_vma_index == -1)
+      return -1;
+    // We calculate the length of the first part of the vma 
+    int length_p1 = page_addr - p->vma_list.addr[vma_index];
+    // We free the requested part
+    int unmapped_length = vma_free_pages(&(p->vma_list), vma_index, page_addr, addr + length, p->pagetable);
+    // Calculate the values of the second part of the vma 
+    uint64 addr_p2 = page_addr + unmapped_length;
+    int length_p2 = p->vma_list.addr[vma_index] - length_p1 - unmapped_length;
+    int offset_p2 = p->vma_list.offset[vma_index] + length_p1 + unmapped_length;
+    // Fill the second part of the vma 
+    vma_fill_vma(&(p->vma_list), new_vma_index, addr_p2, length_p2, p->vma_list.prot[vma_index], 
+                  p->vma_list.flags[vma_index], p->vma_list.fd[vma_index], offset_p2, p->vma_list.file[vma_index]);
+    // Update the first part of the vma 
+    p->vma_list.length[vma_index] = length_p1;
+  } 
+  return 0;
+}

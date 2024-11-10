@@ -17,7 +17,10 @@ CC	Makefile	/^CC = $(TOOLPREFIX)gcc$/;"	m
 CFLAGS	Makefile	/^CFLAGS = -Wall -Werror -O -fno-omit-frame-pointer -ggdb -gdwarf-2$/;"	m
 CONSOLE	kernel/file.h	40;"	d
 CPUS	Makefile	/^CPUS := 1$/;"	m
+DEFAULT_CHILDREN	user/testsettickets.c	8;"	d	file:
 DIRSIZ	kernel/fs.h	54;"	d
+Disassembly	kernel/kernel.asm	/^Disassembly of section .text:$/;"	l
+Disassembly	user/initcode.asm	/^Disassembly of section .text:$/;"	l
 ELF_MAGIC	kernel/elf.h	3;"	d
 ELF_PROG_FLAG_EXEC	kernel/elf.h	40;"	d
 ELF_PROG_FLAG_READ	kernel/elf.h	42;"	d
@@ -32,13 +35,14 @@ FD_INODE	kernel/file.h	/^  enum { FD_NONE, FD_PIPE, FD_INODE, FD_DEVICE } type;$
 FD_NONE	kernel/file.h	/^  enum { FD_NONE, FD_PIPE, FD_INODE, FD_DEVICE } type;$/;"	e	enum:file::__anon4
 FD_PIPE	kernel/file.h	/^  enum { FD_NONE, FD_PIPE, FD_INODE, FD_DEVICE } type;$/;"	e	enum:file::__anon4
 FSMAGIC	kernel/fs.h	25;"	d
-FSSIZE	kernel/param.h	12;"	d
+FSSIZE	kernel/param.h	14;"	d
 GDBPORT	Makefile	/^GDBPORT = $(shell expr `id -u` % 5000 + 25000)$/;"	m
 Header	user/umalloc.c	/^typedef union header Header;$/;"	t	typeref:union:header	file:
 IBLOCK	kernel/fs.h	45;"	d
 IER	kernel/uart.c	24;"	d	file:
 IER_RX_ENABLE	kernel/uart.c	25;"	d	file:
 IER_TX_ENABLE	kernel/uart.c	26;"	d	file:
+INITIAL_TICKETS	kernel/proc.c	/^const uint64 INITIAL_TICKETS = 1;$/;"	v
 INPUT_BUF_SIZE	kernel/console.c	48;"	d	file:
 IPB	kernel/fs.h	42;"	d
 ISR	kernel/uart.c	30;"	d	file:
@@ -51,36 +55,42 @@ LCR_EIGHT_BITS	kernel/uart.c	32;"	d	file:
 LD	Makefile	/^LD = $(TOOLPREFIX)ld$/;"	m
 LDFLAGS	Makefile	/^LDFLAGS = -z max-page-size=4096$/;"	m
 LIST	user/sh.c	11;"	d	file:
-LOGSIZE	kernel/param.h	10;"	d
+LOGSIZE	kernel/param.h	12;"	d
 LSR	kernel/uart.c	34;"	d	file:
 LSR_RX_READY	kernel/uart.c	35;"	d	file:
 LSR_TX_IDLE	kernel/uart.c	36;"	d	file:
-MAKE_SATP	kernel/riscv.h	227;"	d
-MAXARG	kernel/param.h	8;"	d
+MAKE_SATP	kernel/riscv.h	229;"	d
+MAP_FAILED	user/nmaptest.c	13;"	d	file:
+MAP_PRIVATE	kernel/fcntl.h	11;"	d
+MAP_SHARED	kernel/fcntl.h	10;"	d
+MAXARG	kernel/param.h	10;"	d
 MAXARGS	user/sh.c	14;"	d	file:
 MAXFILE	kernel/fs.h	29;"	d
-MAXOPBLOCKS	kernel/param.h	9;"	d
-MAXPATH	kernel/param.h	13;"	d
-MAXVA	kernel/riscv.h	382;"	d
+MAXOPBLOCKS	kernel/param.h	11;"	d
+MAXPATH	kernel/param.h	15;"	d
+MAXVA	kernel/riscv.h	384;"	d
 MAXVAplus	user/usertests.c	/^MAXVAplus(char *s)$/;"	f
-MIE_STIE	kernel/riscv.h	99;"	d
-MSTATUS_MIE	kernel/riscv.h	18;"	d
-MSTATUS_MPP_M	kernel/riscv.h	15;"	d
-MSTATUS_MPP_MASK	kernel/riscv.h	14;"	d
-MSTATUS_MPP_S	kernel/riscv.h	16;"	d
-MSTATUS_MPP_U	kernel/riscv.h	17;"	d
+MAXVMA	kernel/param.h	17;"	d
+MAX_CHILDREN	user/testsettickets.c	7;"	d	file:
+MIE_STIE	kernel/kernel.asm	/^#define MIE_STIE (1L << 5)  \/\/ supervisor timer$/;"	d
+MIE_STIE	kernel/riscv.h	101;"	d
+MSTATUS_MIE	kernel/riscv.h	20;"	d
+MSTATUS_MPP_M	kernel/riscv.h	17;"	d
+MSTATUS_MPP_MASK	kernel/riscv.h	16;"	d
+MSTATUS_MPP_S	kernel/riscv.h	18;"	d
+MSTATUS_MPP_U	kernel/riscv.h	19;"	d
 N	user/forktest.c	8;"	d	file:
-NBUF	kernel/param.h	11;"	d
-NCPU	kernel/param.h	2;"	d
-NDEV	kernel/param.h	6;"	d
+NBUF	kernel/param.h	13;"	d
+NCPU	kernel/param.h	4;"	d
+NDEV	kernel/param.h	8;"	d
 NDIRECT	kernel/fs.h	27;"	d
-NELEM	kernel/defs.h	189;"	d
-NFILE	kernel/param.h	4;"	d
+NELEM	kernel/defs.h	203;"	d
+NFILE	kernel/param.h	6;"	d
 NINDIRECT	kernel/fs.h	28;"	d
-NINODE	kernel/param.h	5;"	d
+NINODE	kernel/param.h	7;"	d
 NINODES	mkfs/mkfs.c	18;"	d	file:
-NOFILE	kernel/param.h	3;"	d
-NPROC	kernel/param.h	1;"	d
+NOFILE	kernel/param.h	5;"	d
+NPROC	kernel/param.h	3;"	d
 NUM	kernel/virtio.h	50;"	d
 OBJCOPY	Makefile	/^OBJCOPY = $(TOOLPREFIX)objcopy$/;"	m
 OBJDUMP	Makefile	/^OBJDUMP = $(TOOLPREFIX)objdump$/;"	m
@@ -90,11 +100,11 @@ O_RDONLY	kernel/fcntl.h	1;"	d
 O_RDWR	kernel/fcntl.h	3;"	d
 O_TRUNC	kernel/fcntl.h	5;"	d
 O_WRONLY	kernel/fcntl.h	2;"	d
-PA2PTE	kernel/riscv.h	367;"	d
-PGROUNDDOWN	kernel/riscv.h	358;"	d
-PGROUNDUP	kernel/riscv.h	357;"	d
-PGSHIFT	kernel/riscv.h	355;"	d
-PGSIZE	kernel/riscv.h	354;"	d
+PA2PTE	kernel/riscv.h	369;"	d
+PGROUNDDOWN	kernel/riscv.h	360;"	d
+PGROUNDUP	kernel/riscv.h	359;"	d
+PGSHIFT	kernel/riscv.h	357;"	d
+PGSIZE	kernel/riscv.h	356;"	d
 PHYSTOP	kernel/memlayout.h	40;"	d
 PIPE	user/sh.c	10;"	d	file:
 PIPESIZE	kernel/pipe.c	11;"	d	file:
@@ -104,38 +114,40 @@ PLIC_PRIORITY	kernel/memlayout.h	30;"	d
 PLIC_SCLAIM	kernel/memlayout.h	34;"	d
 PLIC_SENABLE	kernel/memlayout.h	32;"	d
 PLIC_SPRIORITY	kernel/memlayout.h	33;"	d
-PTE2PA	kernel/riscv.h	369;"	d
-PTE_FLAGS	kernel/riscv.h	371;"	d
-PTE_R	kernel/riscv.h	361;"	d
-PTE_U	kernel/riscv.h	364;"	d
-PTE_V	kernel/riscv.h	360;"	d
-PTE_W	kernel/riscv.h	362;"	d
-PTE_X	kernel/riscv.h	363;"	d
-PX	kernel/riscv.h	376;"	d
-PXMASK	kernel/riscv.h	374;"	d
-PXSHIFT	kernel/riscv.h	375;"	d
+PROT_READ	kernel/fcntl.h	7;"	d
+PROT_WRITE	kernel/fcntl.h	8;"	d
+PTE2PA	kernel/riscv.h	371;"	d
+PTE_FLAGS	kernel/riscv.h	373;"	d
+PTE_R	kernel/riscv.h	363;"	d
+PTE_U	kernel/riscv.h	366;"	d
+PTE_V	kernel/riscv.h	362;"	d
+PTE_W	kernel/riscv.h	364;"	d
+PTE_X	kernel/riscv.h	365;"	d
+PX	kernel/riscv.h	378;"	d
+PXMASK	kernel/riscv.h	376;"	d
+PXSHIFT	kernel/riscv.h	377;"	d
 QEMU	Makefile	/^QEMU = qemu-system-riscv64$/;"	m
 QEMUGDB	Makefile	/^QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \\$/;"	m
 QEMUOPTS	Makefile	/^QEMUOPTS = -machine virt -bios none -kernel $K\/kernel -m 128M -smp $(CPUS) -nographic$/;"	m
 R	kernel/virtio_disk.c	20;"	d	file:
 REDIR	user/sh.c	9;"	d	file:
 RHR	kernel/uart.c	22;"	d	file:
-ROOTDEV	kernel/param.h	7;"	d
+ROOTDEV	kernel/param.h	9;"	d
 ROOTINO	kernel/fs.h	5;"	d
 RUNNABLE	kernel/proc.h	/^enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };$/;"	e	enum:procstate
 RUNNING	kernel/proc.h	/^enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };$/;"	e	enum:procstate
 ReadReg	kernel/uart.c	38;"	d	file:
 Reg	kernel/uart.c	16;"	d	file:
-SATP_SV39	kernel/riscv.h	225;"	d
-SIE_SEIE	kernel/riscv.h	81;"	d
-SIE_SSIE	kernel/riscv.h	83;"	d
-SIE_STIE	kernel/riscv.h	82;"	d
+SATP_SV39	kernel/riscv.h	227;"	d
+SIE_SEIE	kernel/riscv.h	83;"	d
+SIE_SSIE	kernel/riscv.h	85;"	d
+SIE_STIE	kernel/riscv.h	84;"	d
 SLEEPING	kernel/proc.h	/^enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };$/;"	e	enum:procstate
-SSTATUS_SIE	kernel/riscv.h	48;"	d
-SSTATUS_SPIE	kernel/riscv.h	46;"	d
-SSTATUS_SPP	kernel/riscv.h	45;"	d
-SSTATUS_UIE	kernel/riscv.h	49;"	d
-SSTATUS_UPIE	kernel/riscv.h	47;"	d
+SSTATUS_SIE	kernel/riscv.h	50;"	d
+SSTATUS_SPIE	kernel/riscv.h	48;"	d
+SSTATUS_SPP	kernel/riscv.h	47;"	d
+SSTATUS_UIE	kernel/riscv.h	51;"	d
+SSTATUS_UPIE	kernel/riscv.h	49;"	d
 SYS_chdir	kernel/syscall.h	10;"	d
 SYS_close	kernel/syscall.h	22;"	d
 SYS_dup	kernel/syscall.h	11;"	d
@@ -149,6 +161,8 @@ SYS_kill	kernel/syscall.h	7;"	d
 SYS_link	kernel/syscall.h	20;"	d
 SYS_mkdir	kernel/syscall.h	21;"	d
 SYS_mknod	kernel/syscall.h	18;"	d
+SYS_mmap	kernel/syscall.h	25;"	d
+SYS_munmap	kernel/syscall.h	26;"	d
 SYS_open	kernel/syscall.h	16;"	d
 SYS_pipe	kernel/syscall.h	5;"	d
 SYS_read	kernel/syscall.h	6;"	d
@@ -174,7 +188,7 @@ ULIB	Makefile	/^ULIB = $U\/ulib.o $U\/usys.o $U\/printf.o $U\/umalloc.o$/;"	m
 UNUSED	kernel/proc.h	/^enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };$/;"	e	enum:procstate
 UPROGS	Makefile	/^UPROGS=\\$/;"	m
 USED	kernel/proc.h	/^enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };$/;"	e	enum:procstate
-USERSTACK	kernel/param.h	14;"	d
+USERSTACK	kernel/param.h	16;"	d
 VIRTIO0	kernel/memlayout.h	25;"	d
 VIRTIO0_IRQ	kernel/memlayout.h	26;"	d
 VIRTIO_BLK_F_CONFIG_WCE	kernel/virtio.h	42;"	d
@@ -214,7 +228,18 @@ VRING_DESC_F_NEXT	kernel/virtio.h	59;"	d
 VRING_DESC_F_WRITE	kernel/virtio.h	60;"	d
 WriteReg	kernel/uart.c	39;"	d	file:
 ZOMBIE	kernel/proc.h	/^enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };$/;"	e	enum:procstate
+_DEFS_H_	kernel/defs.h	2;"	d
+_PARAMS_H_	kernel/param.h	2;"	d
+_PROC_H_	kernel/proc.h	2;"	d
+_PSTAT_H_	kernel/pstat.h	2;"	d
+_RISCV_H_	kernel/riscv.h	2;"	d
+_SPINLOCK_H_	kernel/spinlock.h	2;"	d
+_TYPES_H_	kernel/types.h	2;"	d
+_VMA_H_	kernel/vma.h	2;"	d
 _entry	kernel/entry.S	/^_entry:$/;"	l
+_v1	user/nmaptest.c	/^_v1(char *p)$/;"	f
+a	kernel/kernel.asm	/^    a = (uint*)bp->data;$/;"	d
+a	kernel/kernel.asm	/^  a = va;$/;"	d
 a0	kernel/proc.h	/^  \/* 112 *\/ uint64 a0;$/;"	m	struct:trapframe
 a1	kernel/proc.h	/^  \/* 120 *\/ uint64 a1;$/;"	m	struct:trapframe
 a2	kernel/proc.h	/^  \/* 128 *\/ uint64 a2;$/;"	m	struct:trapframe
@@ -225,7 +250,10 @@ a6	kernel/proc.h	/^  \/* 160 *\/ uint64 a6;$/;"	m	struct:trapframe
 a7	kernel/proc.h	/^  \/* 168 *\/ uint64 a7;$/;"	m	struct:trapframe
 acquire	kernel/spinlock.c	/^acquire(struct spinlock *lk)$/;"	f
 acquiresleep	kernel/sleeplock.c	/^acquiresleep(struct sleeplock *lk)$/;"	f
+addr	kernel/kernel.asm	/^      addr = balloc(ip->dev);$/;"	d
+addr	kernel/kernel.asm	/^  addr = myproc()->sz;$/;"	d
 addr	kernel/virtio.h	/^  uint64 addr;$/;"	m	struct:virtq_desc
+addr	kernel/vma.h	/^  uint64 addr[MAXVMA];$/;"	m	struct:vma
 addrs	kernel/file.h	/^  uint addrs[NDIRECT+1];$/;"	m	struct:inode
 addrs	kernel/fs.h	/^  uint addrs[NDIRECT+1];   \/\/ Data block addresses$/;"	m	struct:dinode
 align	kernel/elf.h	/^  uint64 align;$/;"	m	struct:proghdr
@@ -244,9 +272,11 @@ argv	user/initcode.S	/^argv:$/;"	l
 argv	user/sh.c	/^  char *argv[MAXARGS];$/;"	m	struct:execcmd	file:
 atoi	user/ulib.c	/^atoi(const char *s)$/;"	f
 avail	kernel/virtio_disk.c	/^  struct virtq_avail *avail;$/;"	m	struct:disk	typeref:struct:disk::virtq_avail	file:
+b	kernel/kernel.asm	/^  b = bget(dev, blockno);$/;"	d
 b	kernel/virtio_disk.c	/^    struct buf *b;$/;"	m	struct:disk::__anon7	typeref:struct:disk::__anon7::buf	file:
 backcmd	user/sh.c	/^backcmd(struct cmd *subcmd)$/;"	f
 backcmd	user/sh.c	/^struct backcmd {$/;"	s	file:
+bad	kernel/kernel.asm	/^ bad:$/;"	l
 badarg	user/usertests.c	/^badarg(char *s)$/;"	f
 badwrite	user/usertests.c	/^badwrite(char *s)$/;"	f
 balloc	kernel/fs.c	/^balloc(uint dev)$/;"	f	file:
@@ -256,6 +286,7 @@ bcache	kernel/bio.c	/^} bcache;$/;"	v	typeref:struct:__anon1
 begin_op	kernel/log.c	/^begin_op(void)$/;"	f
 bfree	kernel/fs.c	/^bfree(int dev, uint b)$/;"	f	file:
 bget	kernel/bio.c	/^bget(uint dev, uint blockno)$/;"	f	file:
+bi	kernel/kernel.asm	/^  bi = b % BPB;$/;"	d
 big	user/usertests.c	/^void *big = (void*) 0xeaeb0b5b00002f5e;$/;"	v
 bigargtest	user/usertests.c	/^bigargtest(char *s)$/;"	f
 bigdir	user/usertests.c	/^bigdir(char *s)$/;"	f
@@ -266,6 +297,15 @@ block	kernel/log.c	/^  int block[LOGSIZE];$/;"	m	struct:logheader	file:
 blockno	kernel/buf.h	/^  uint blockno;$/;"	m	struct:buf
 bmap	kernel/fs.c	/^bmap(struct inode *ip, uint bn)$/;"	f	file:
 bmapstart	kernel/fs.h	/^  uint bmapstart;    \/\/ Block number of first free map block$/;"	m	struct:superblock
+bp	kernel/kernel.asm	/^    bp = bread(dev, BBLOCK(b, sb));$/;"	d
+bp	kernel/kernel.asm	/^    bp = bread(dev, IBLOCK(inum, sb));$/;"	d
+bp	kernel/kernel.asm	/^    bp = bread(ip->dev, IBLOCK(ip->inum, sb));$/;"	d
+bp	kernel/kernel.asm	/^    bp = bread(ip->dev, addr);$/;"	d
+bp	kernel/kernel.asm	/^    bp = bread(ip->dev, ip->addrs[NDIRECT]);$/;"	d
+bp	kernel/kernel.asm	/^  bp = bread(dev, 1);$/;"	d
+bp	kernel/kernel.asm	/^  bp = bread(dev, BBLOCK(b, sb));$/;"	d
+bp	kernel/kernel.asm	/^  bp = bread(dev, bno);$/;"	d
+bp	kernel/kernel.asm	/^  bp = bread(ip->dev, IBLOCK(ip->inum, sb));$/;"	d
 bpin	kernel/bio.c	/^bpin(struct buf *b) {$/;"	f
 bread	kernel/bio.c	/^bread(uint dev, uint blockno)$/;"	f
 brelse	kernel/bio.c	/^brelse(struct buf *b)$/;"	f
@@ -275,12 +315,20 @@ buf	kernel/buf.h	/^struct buf {$/;"	s
 buf	kernel/console.c	/^  char buf[INPUT_BUF_SIZE];$/;"	m	struct:__anon2	file:
 buf	user/cat.c	/^char buf[512];$/;"	v
 buf	user/grep.c	/^char buf[1024];$/;"	v
+buf	user/nmaptest.c	/^char buf[BSIZE];$/;"	v
 buf	user/usertests.c	/^char buf[BUFSZ];$/;"	v
 buf	user/wc.c	/^char buf[512];$/;"	v
 bunpin	kernel/bio.c	/^bunpin(struct buf *b) {$/;"	f
 bwrite	kernel/bio.c	/^bwrite(struct buf *b)$/;"	f
 bzero	kernel/fs.c	/^bzero(int dev, int bno)$/;"	f	file:
+c	kernel/kernel.asm	/^      c = (c == '\\r') ? '\\n' : c;$/;"	d
+c	kernel/kernel.asm	/^    c = cons.buf[cons.r++ % INPUT_BUF_SIZE];$/;"	d
+c	user/initcode.asm	/^   c:	00058593          	mv	a1,a1$/;"	l
+c0	kernel/kernel.asm	/^    c0 = fmt[i+0] & 0xff;$/;"	d
+c1	kernel/kernel.asm	/^    c1 = c2 = 0;$/;"	d
 cat	user/cat.c	/^cat(int fd)$/;"	f
+cbuf	kernel/kernel.asm	/^    cbuf = c;$/;"	d
+ch	kernel/kernel.asm	/^    ch = pi->data[pi->nread++ % PIPESIZE];$/;"	d
 chan	kernel/proc.h	/^  void *chan;                  \/\/ If non-zero, sleeping on chan$/;"	m	struct:proc
 clockintr	kernel/trap.c	/^clockintr()$/;"	f
 cmd	user/sh.c	/^  struct cmd *cmd;$/;"	m	struct:backcmd	typeref:struct:backcmd::cmd	file:
@@ -315,6 +363,7 @@ create	kernel/sysfile.c	/^create(char *path, short type, short major, short mino
 createdelete	user/usertests.c	/^createdelete(char *s)$/;"	f
 createtest	user/usertests.c	/^createtest(char *s)$/;"	f
 cwd	kernel/proc.h	/^  struct inode *cwd;           \/\/ Current directory$/;"	m	struct:proc	typeref:struct:proc::inode
+d	kernel/kernel.asm	/^  d = dst;$/;"	d
 data	kernel/buf.h	/^  uchar data[BSIZE];$/;"	m	struct:buf
 data	kernel/pipe.c	/^  char data[PIPESIZE];$/;"	m	struct:pipe	file:
 desc	kernel/virtio_disk.c	/^  struct virtq_desc *desc;$/;"	m	struct:disk	typeref:struct:disk::virtq_desc	file:
@@ -329,6 +378,9 @@ die	mkfs/mkfs.c	/^die(const char *s)$/;"	f
 digits	kernel/printf.c	/^static char digits[] = "0123456789abcdef";$/;"	v	file:
 digits	user/printf.c	/^static char digits[] = "0123456789ABCDEF";$/;"	v	file:
 dinode	kernel/fs.h	/^struct dinode {$/;"	s
+dip	kernel/kernel.asm	/^    dip = (struct dinode*)bp->data + inum%IPB;$/;"	d
+dip	kernel/kernel.asm	/^    dip = (struct dinode*)bp->data + ip->inum%IPB;$/;"	d
+dip	kernel/kernel.asm	/^  dip = (struct dinode*)bp->data + ip->inum%IPB;$/;"	d
 dirent	kernel/fs.h	/^struct dirent {$/;"	s
 dirfile	user/usertests.c	/^dirfile(char *s)$/;"	f
 dirlink	kernel/fs.c	/^dirlink(struct inode *dp, char *name, uint inum)$/;"	f
@@ -338,8 +390,10 @@ disk	kernel/buf.h	/^  int disk;    \/\/ does disk "own" buf?$/;"	m	struct:buf
 disk	kernel/virtio_disk.c	/^static struct disk {$/;"	s	file:
 disk	kernel/virtio_disk.c	/^} disk;$/;"	v	typeref:struct:disk	file:
 diskfull	user/usertests.c	/^diskfull(char *s)$/;"	f
+do_commit	kernel/kernel.asm	/^    do_commit = 1;$/;"	d
 do_rand	user/grind.c	/^do_rand(unsigned long *ctx)$/;"	f
 drivetests	user/usertests.c	/^drivetests(int quick, int continuous, char *justone) {$/;"	f
+dstva	kernel/kernel.asm	/^    dstva = va0 + PGSIZE;$/;"	d
 e	kernel/console.c	/^  uint e;  \/\/ Edit index$/;"	m	struct:__anon2	file:
 eargv	user/sh.c	/^  char *eargv[MAXARGS];$/;"	m	struct:execcmd	file:
 efile	user/sh.c	/^  char *efile;$/;"	m	struct:redircmd	file:
@@ -348,10 +402,14 @@ either_copyin	kernel/proc.c	/^either_copyin(void *dst, int user_src, uint64 src,
 either_copyout	kernel/proc.c	/^either_copyout(int user_dst, uint64 dst, void *src, uint64 len)$/;"	f
 elf	kernel/elf.h	/^  uchar elf[12];$/;"	m	struct:elfhdr
 elfhdr	kernel/elf.h	/^struct elfhdr {$/;"	s
+empty	kernel/kernel.asm	/^      empty = ip;$/;"	d
+empty	kernel/kernel.asm	/^  empty = 0;$/;"	d
 end_op	kernel/log.c	/^end_op(void)$/;"	f
 entry	kernel/elf.h	/^  uint64 entry;$/;"	m	struct:elfhdr
 entry	user/usys.pl	/^sub entry {$/;"	s
 epc	kernel/proc.h	/^  \/*  24 *\/ uint64 epc;           \/\/ saved user program counter$/;"	m	struct:trapframe
+err	kernel/kernel.asm	/^ err:$/;"	l
+err	user/nmaptest.c	/^err(char *why)$/;"	f
 exec	kernel/exec.c	/^exec(char *path, char **argv)$/;"	f
 execcmd	user/sh.c	/^execcmd(void)$/;"	f
 execcmd	user/sh.c	/^struct execcmd {$/;"	s	file:
@@ -359,15 +417,21 @@ execout	user/usertests.c	/^execout(char *s)$/;"	f
 exectest	user/usertests.c	/^exectest(char *s)$/;"	f
 exit	kernel/proc.c	/^exit(int status)$/;"	f
 exit	user/initcode.S	/^exit:$/;"	l
+exit	user/initcode.asm	/^exit:$/;"	l
 exitiputtest	user/usertests.c	/^exitiputtest(char *s)$/;"	f
 exitwait	user/usertests.c	/^exitwait(char *s)$/;"	f
+extern	kernel/kernel.asm	/^extern int devintr();$/;"	l
 f	user/usertests.c	/^  void (*f)(char *);$/;"	m	struct:test	file:
+fd	kernel/vma.h	/^  int fd[MAXVMA];$/;"	m	struct:vma
 fd	user/sh.c	/^  int fd;$/;"	m	struct:redircmd	file:
+fd0	kernel/kernel.asm	/^  fd0 = -1;$/;"	d
 fdalloc	kernel/sysfile.c	/^fdalloc(struct file *f)$/;"	f	file:
 fetchaddr	kernel/syscall.c	/^fetchaddr(uint64 addr, uint64 *ip)$/;"	f
 fetchstr	kernel/syscall.c	/^fetchstr(uint64 addr, char *buf, int max)$/;"	f
+ff	kernel/kernel.asm	/^  ff = *f;$/;"	d
 file	kernel/file.c	/^  struct file file[NFILE];$/;"	m	struct:__anon3	typeref:struct:__anon3::file	file:
 file	kernel/file.h	/^struct file {$/;"	s
+file	kernel/vma.h	/^  struct file * file[MAXVMA];$/;"	m	struct:vma	typeref:struct:vma::file
 file	user/sh.c	/^  char *file;$/;"	m	struct:redircmd	file:
 filealloc	kernel/file.c	/^filealloc(void)$/;"	f
 fileclose	kernel/file.c	/^fileclose(struct file *f)$/;"	f
@@ -377,15 +441,20 @@ fileread	kernel/file.c	/^fileread(struct file *f, uint64 addr, int n)$/;"	f
 filestat	kernel/file.c	/^filestat(struct file *f, uint64 addr)$/;"	f
 filesz	kernel/elf.h	/^  uint64 filesz;$/;"	m	struct:proghdr
 filewrite	kernel/file.c	/^filewrite(struct file *f, uint64 addr, int n)$/;"	f
+fillpstats	kernel/proc.c	/^fillpstats(struct pstat * pstats)$/;"	f
+first	kernel/kernel.asm	/^    first = 0;$/;"	d
 flags	kernel/elf.h	/^  uint flags;$/;"	m	struct:elfhdr
 flags	kernel/elf.h	/^  uint32 flags;$/;"	m	struct:proghdr
+flags	kernel/kernel.asm	/^    flags = PTE_FLAGS(*pte);$/;"	d
 flags	kernel/virtio.h	/^  uint16 flags; \/\/ always zero$/;"	m	struct:virtq_avail
 flags	kernel/virtio.h	/^  uint16 flags; \/\/ always zero$/;"	m	struct:virtq_used
 flags	kernel/virtio.h	/^  uint16 flags;$/;"	m	struct:virtq_desc
+flags	kernel/vma.h	/^  int flags[MAXVMA];$/;"	m	struct:vma
 flags2perm	kernel/exec.c	/^int flags2perm(int flags)$/;"	f
 fmtname	user/ls.c	/^fmtname(char *path)$/;"	f
 fork	kernel/proc.c	/^fork(void)$/;"	f
 fork1	user/sh.c	/^fork1(void)$/;"	f
+fork_test	user/nmaptest.c	/^fork_test(void)$/;"	f
 forkfork	user/usertests.c	/^forkfork(char *s)$/;"	f
 forkforkfork	user/usertests.c	/^forkforkfork(char *s)$/;"	f
 forkret	kernel/proc.c	/^forkret(void)$/;"	f
@@ -416,10 +485,13 @@ go	user/grind.c	/^go(int which_child)$/;"	f
 gp	kernel/proc.h	/^  \/*  56 *\/ uint64 gp;$/;"	m	struct:trapframe
 grep	user/grep.c	/^grep(char *pattern, int fd)$/;"	f
 growproc	kernel/proc.c	/^growproc(int n)$/;"	f
+havekids	kernel/kernel.asm	/^        havekids = 1;$/;"	d
+havekids	kernel/kernel.asm	/^    havekids = 0;$/;"	d
 head	kernel/bio.c	/^  struct buf head;$/;"	m	struct:__anon1	typeref:struct:__anon1::buf	file:
 header	user/umalloc.c	/^union header {$/;"	u	file:
 holding	kernel/spinlock.c	/^holding(struct spinlock *lk)$/;"	f
 holdingsleep	kernel/sleeplock.c	/^holdingsleep(struct sleeplock *lk)$/;"	f
+i	kernel/kernel.asm	/^  i = 0;$/;"	d
 ialloc	kernel/fs.c	/^ialloc(uint dev, short type)$/;"	f
 ialloc	mkfs/mkfs.c	/^ialloc(ushort type)$/;"	f
 iappend	mkfs/mkfs.c	/^iappend(uint inum, void *xp, int n)$/;"	f
@@ -435,6 +507,7 @@ init	user/initcode.S	/^init:$/;"	l
 initcode	kernel/proc.c	/^uchar initcode[] = {$/;"	v
 initlock	kernel/spinlock.c	/^initlock(struct spinlock *lk, char *name)$/;"	f
 initlog	kernel/log.c	/^initlog(int dev, struct superblock *sb)$/;"	f
+initproc	kernel/kernel.asm	/^  initproc = p;$/;"	d
 initproc	kernel/proc.c	/^struct proc *initproc;$/;"	v	typeref:struct:proc
 initsleeplock	kernel/sleeplock.c	/^initsleeplock(struct sleeplock *lk, char *name)$/;"	f
 ino	kernel/stat.h	/^  uint ino;    \/\/ Inode number$/;"	m	struct:stat
@@ -442,13 +515,23 @@ inode	kernel/file.h	/^struct inode {$/;"	s
 inode	kernel/fs.c	/^  struct inode inode[NINODE];$/;"	m	struct:__anon5	typeref:struct:__anon5::inode	file:
 inodestart	kernel/fs.h	/^  uint inodestart;   \/\/ Block number of first inode block$/;"	m	struct:superblock
 install_trans	kernel/log.c	/^install_trans(int recovering)$/;"	f	file:
+int	kernel/kernel.asm	/^int flags2perm(int flags)$/;"	l
+int	kernel/kernel.asm	/^int$/;"	l
+intena	kernel/kernel.asm	/^  intena = mycpu()->intena;$/;"	d
 intena	kernel/proc.h	/^  int intena;                 \/\/ Were interrupts enabled before push_off()?$/;"	m	struct:cpu
 intr_get	kernel/riscv.h	/^intr_get()$/;"	f
 intr_off	kernel/riscv.h	/^intr_off()$/;"	f
 intr_on	kernel/riscv.h	/^intr_on()$/;"	f
 inum	kernel/file.h	/^  uint inum;          \/\/ Inode number$/;"	m	struct:inode
 inum	kernel/fs.h	/^  ushort inum;$/;"	m	struct:dirent
+inum	kernel/kernel.asm	/^      inum = de.inum;$/;"	d
+inuse	kernel/pstat.h	/^  int inuse[NPROC];   \/\/ whether this slot of the process table is in use (1 or 0)$/;"	m	struct:pstat
 ip	kernel/file.h	/^  struct inode *ip;  \/\/ FD_INODE and FD_DEVICE$/;"	m	struct:file	typeref:struct:file::inode
+ip	kernel/kernel.asm	/^    ip = create(path, T_FILE, 0, 0);$/;"	d
+ip	kernel/kernel.asm	/^    ip = idup(myproc()->cwd);$/;"	d
+ip	kernel/kernel.asm	/^    ip = iget(ROOTDEV, ROOTINO);$/;"	d
+ip	kernel/kernel.asm	/^    ip = next;$/;"	d
+ip	kernel/kernel.asm	/^  ip = 0;$/;"	d
 iput	kernel/fs.c	/^iput(struct inode *ip)$/;"	f
 iputtest	user/usertests.c	/^iputtest(char *s)$/;"	f
 iref	user/usertests.c	/^iref(char *s)$/;"	f
@@ -459,8 +542,10 @@ itrunc	kernel/fs.c	/^itrunc(struct inode *ip)$/;"	f
 iunlock	kernel/fs.c	/^iunlock(struct inode *ip)$/;"	f
 iunlockput	kernel/fs.c	/^iunlockput(struct inode *ip)$/;"	f
 iupdate	kernel/fs.c	/^iupdate(struct inode *ip)$/;"	f
+k	kernel/kernel.asm	/^  k = p->killed;$/;"	d
 kalloc	kernel/kalloc.c	/^kalloc(void)$/;"	f
 kernel_hartid	kernel/proc.h	/^  \/*  32 *\/ uint64 kernel_hartid; \/\/ saved kernel tp$/;"	m	struct:trapframe
+kernel_pagetable	kernel/kernel.asm	/^  kernel_pagetable = kvmmake();$/;"	d
 kernel_pagetable	kernel/vm.c	/^pagetable_t kernel_pagetable;$/;"	v
 kernel_satp	kernel/proc.h	/^  \/*   0 *\/ uint64 kernel_satp;   \/\/ kernel page table$/;"	m	struct:trapframe
 kernel_sp	kernel/proc.h	/^  \/*   8 *\/ uint64 kernel_sp;     \/\/ top of process's kernel stack$/;"	m	struct:trapframe
@@ -475,15 +560,22 @@ killed	kernel/proc.h	/^  int killed;                  \/\/ If non-zero, have bee
 killstatus	user/usertests.c	/^killstatus(char *s)$/;"	f
 kinit	kernel/kalloc.c	/^kinit()$/;"	f
 kmem	kernel/kalloc.c	/^} kmem;$/;"	v	typeref:struct:__anon8
+kpgtbl	kernel/kernel.asm	/^  kpgtbl = (pagetable_t) kalloc();$/;"	d
 kstack	kernel/proc.h	/^  uint64 kstack;               \/\/ Virtual address of kernel stack$/;"	m	struct:proc
 kvminit	kernel/vm.c	/^kvminit(void)$/;"	f
 kvminithart	kernel/vm.c	/^kvminithart()$/;"	f
 kvmmake	kernel/vm.c	/^kvmmake(void)$/;"	f
 kvmmap	kernel/vm.c	/^kvmmap(pagetable_t kpgtbl, uint64 va, uint64 pa, uint64 sz, int perm)$/;"	f
+last	kernel/kernel.asm	/^      last = s+1;$/;"	d
+last	kernel/kernel.asm	/^  last = va + size - PGSIZE;$/;"	d
 left	user/sh.c	/^  struct cmd *left;$/;"	m	struct:listcmd	typeref:struct:listcmd::cmd	file:
 left	user/sh.c	/^  struct cmd *left;$/;"	m	struct:pipecmd	typeref:struct:pipecmd::cmd	file:
+len	kernel/kernel.asm	/^  len = path - s;$/;"	d
 len	kernel/virtio.h	/^  uint32 len;$/;"	m	struct:virtq_desc
 len	kernel/virtio.h	/^  uint32 len;$/;"	m	struct:virtq_used_elem
+length	kernel/vma.h	/^  uint64 length[MAXVMA];$/;"	m	struct:vma
+lfsr	kernel/kernel.asm	/^  lfsr = (lfsr >> 1) | (bit << 15);$/;"	d
+lfsr	kernel/proc.c	/^uint64 lfsr = 0xACE1u;$/;"	v
 lh	kernel/log.c	/^  struct logheader lh;$/;"	m	struct:log	typeref:struct:log::logheader	file:
 linktest	user/usertests.c	/^linktest(char *s)$/;"	f
 linkunlink	user/usertests.c	/^linkunlink(char *s)$/;"	f
@@ -504,6 +596,7 @@ lock	kernel/printf.c	/^  struct spinlock lock;$/;"	m	struct:__anon6	typeref:stru
 lock	kernel/proc.h	/^  struct spinlock lock;$/;"	m	struct:proc	typeref:struct:proc::spinlock
 locked	kernel/sleeplock.h	/^  uint locked;       \/\/ Is the lock held?$/;"	m	struct:sleeplock
 locked	kernel/spinlock.h	/^  uint locked;       \/\/ Is the lock held?$/;"	m	struct:spinlock
+locking	kernel/kernel.asm	/^  locking = pr.locking;$/;"	d
 locking	kernel/printf.c	/^  int locking;$/;"	m	struct:__anon6	file:
 log	kernel/log.c	/^struct log log;$/;"	v	typeref:struct:log
 log	kernel/log.c	/^struct log {$/;"	s	file:
@@ -511,6 +604,9 @@ log_write	kernel/log.c	/^log_write(struct buf *b)$/;"	f
 logheader	kernel/log.c	/^struct logheader {$/;"	s	file:
 logstart	kernel/fs.h	/^  uint logstart;     \/\/ Block number of first log block$/;"	m	struct:superblock
 ls	user/ls.c	/^ls(char *path)$/;"	f
+m	kernel/kernel.asm	/^      m = 1 << (bi % 8);$/;"	d
+m	kernel/kernel.asm	/^    m = min(n - tot, BSIZE - off%BSIZE);$/;"	d
+m	kernel/kernel.asm	/^  m = 1 << (bi % 8);$/;"	d
 machine	kernel/elf.h	/^  ushort machine;$/;"	m	struct:elfhdr
 magic	kernel/elf.h	/^  uint magic;  \/\/ must equal ELF_MAGIC$/;"	m	struct:elfhdr
 magic	kernel/fs.h	/^  uint magic;        \/\/ Must be FSMAGIC$/;"	m	struct:superblock
@@ -524,11 +620,14 @@ main	user/grind.c	/^main()$/;"	f
 main	user/init.c	/^main(void)$/;"	f
 main	user/kill.c	/^main(int argc, char **argv)$/;"	f
 main	user/ln.c	/^main(int argc, char *argv[])$/;"	f
+main	user/lotterytest.c	/^main(int argc, char *argv[])$/;"	f
 main	user/ls.c	/^main(int argc, char *argv[])$/;"	f
 main	user/mkdir.c	/^main(int argc, char *argv[])$/;"	f
+main	user/nmaptest.c	/^main(int argc, char *argv[])$/;"	f
 main	user/rm.c	/^main(int argc, char *argv[])$/;"	f
 main	user/sh.c	/^main(void)$/;"	f
 main	user/stressfs.c	/^main(int argc, char *argv[])$/;"	f
+main	user/testsettickets.c	/^int main(int argc, char *argv[]){$/;"	f
 main	user/tickettest.c	/^main(int argc, char *argv[])$/;"	f
 main	user/usertests.c	/^main(int argc, char *argv[])$/;"	f
 main	user/wc.c	/^main(int argc, char *argv[])$/;"	f
@@ -537,12 +636,15 @@ major	kernel/file.h	/^  short major;       \/\/ FD_DEVICE$/;"	m	struct:file
 major	kernel/file.h	/^  short major;$/;"	m	struct:inode
 major	kernel/file.h	12;"	d
 major	kernel/fs.h	/^  short major;          \/\/ Major device number (T_DEVICE only)$/;"	m	struct:dinode
+makefile	user/nmaptest.c	/^makefile(const char *f)$/;"	f
 malloc	user/umalloc.c	/^malloc(uint nbytes)$/;"	f
 manywrites	user/usertests.c	/^manywrites(char *s)$/;"	f
 mappages	kernel/vm.c	/^mappages(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm)$/;"	f
 match	user/grep.c	/^match(char *re, char *text)$/;"	f
 matchhere	user/grep.c	/^int matchhere(char *re, char *text)$/;"	f
 matchstar	user/grep.c	/^int matchstar(int c, char *re, char *text)$/;"	f
+mem	kernel/kernel.asm	/^    mem = kalloc();$/;"	d
+mem	kernel/kernel.asm	/^  mem = kalloc();$/;"	d
 mem	user/usertests.c	/^mem(char *s)$/;"	f
 memcmp	kernel/string.c	/^memcmp(const void *v1, const void *v2, uint n)$/;"	f
 memcmp	user/ulib.c	/^memcmp(const void *s1, const void *s2, uint n)$/;"	f
@@ -559,11 +661,22 @@ minor	kernel/file.h	/^  short minor;$/;"	m	struct:inode
 minor	kernel/file.h	13;"	d
 minor	kernel/fs.h	/^  short minor;          \/\/ Minor device number (T_DEVICE only)$/;"	m	struct:dinode
 mkdev	kernel/file.h	14;"	d
+mmap	kernel/file.c	/^mmap(uint64 addr, int length, int prot, int flags, struct file* file, int offset){$/;"	f
+mmap_test	user/nmaptest.c	/^mmap_test(void)$/;"	f
 mode	user/sh.c	/^  int mode;$/;"	m	struct:redircmd	file:
 morecore	user/umalloc.c	/^morecore(uint nu)$/;"	f	file:
 mycpu	kernel/proc.c	/^mycpu(void)$/;"	f
 myproc	kernel/proc.c	/^myproc(void)$/;"	f
+n	kernel/kernel.asm	/^      n = PGSIZE;$/;"	d
+n	kernel/kernel.asm	/^      n = len;$/;"	d
+n	kernel/kernel.asm	/^      n = max;$/;"	d
+n	kernel/kernel.asm	/^      n = sz - i;$/;"	d
+n	kernel/kernel.asm	/^    n = 0;$/;"	d
+n	kernel/kernel.asm	/^    n = PGSIZE - (dstva - va0);$/;"	d
+n	kernel/kernel.asm	/^    n = PGSIZE - (srcva - va0);$/;"	d
+n	kernel/kernel.asm	/^    n = ip->size - off;$/;"	d
 n	kernel/log.c	/^  int n;$/;"	m	struct:logheader	file:
+n1	kernel/kernel.asm	/^        n1 = max;$/;"	d
 name	kernel/fs.h	/^  char name[DIRSIZ];$/;"	m	struct:dirent
 name	kernel/proc.h	/^  char name[16];               \/\/ Process name (debugging)$/;"	m	struct:proc
 name	kernel/sleeplock.h	/^  char *name;        \/\/ Name of lock.$/;"	m	struct:sleeplock
@@ -578,6 +691,7 @@ nblocks	mkfs/mkfs.c	/^int nblocks;  \/\/ Number of data blocks$/;"	v
 next	kernel/buf.h	/^  struct buf *next;$/;"	m	struct:buf	typeref:struct:buf::buf
 next	kernel/kalloc.c	/^  struct run *next;$/;"	m	struct:run	typeref:struct:run::run	file:
 next	kernel/virtio.h	/^  uint16 next;$/;"	m	struct:virtq_desc
+nextpid	kernel/kernel.asm	/^  nextpid = nextpid + 1;$/;"	d
 nextpid	kernel/proc.c	/^int nextpid = 1;$/;"	v
 ninodeblocks	mkfs/mkfs.c	/^int ninodeblocks = NINODES \/ IPB + 1;$/;"	v
 ninodes	kernel/fs.h	/^  uint ninodes;      \/\/ Number of inodes.$/;"	m	struct:superblock
@@ -591,20 +705,37 @@ noff	kernel/proc.h	/^  int noff;                   \/\/ Depth of push_off() nest
 nowrite	user/usertests.c	/^nowrite(char *s)$/;"	f
 nread	kernel/pipe.c	/^  uint nread;     \/\/ number of bytes read$/;"	m	struct:pipe	file:
 nulterminate	user/sh.c	/^nulterminate(struct cmd *cmd)$/;"	f
+num	kernel/kernel.asm	/^  num = p->trapframe->a7;$/;"	d
 nwrite	kernel/pipe.c	/^  uint nwrite;    \/\/ number of bytes written$/;"	m	struct:pipe	file:
 off	kernel/elf.h	/^  uint64 off;$/;"	m	struct:proghdr
 off	kernel/file.h	/^  uint off;          \/\/ FD_INODE$/;"	m	struct:file
 ofile	kernel/proc.h	/^  struct file *ofile[NOFILE];  \/\/ Open files$/;"	m	struct:proc	typeref:struct:proc::file
+oldpagetable	kernel/kernel.asm	/^  oldpagetable = p->pagetable;$/;"	d
+oldsz	kernel/kernel.asm	/^  oldsz = PGROUNDUP(oldsz);$/;"	d
 openiputtest	user/usertests.c	/^openiputtest(char *s)$/;"	f
 opentest	user/usertests.c	/^opentest(char *s)$/;"	f
 ops	kernel/virtio_disk.c	/^  struct virtio_blk_req ops[NUM];$/;"	m	struct:disk	typeref:struct:disk::virtio_blk_req	file:
+os	kernel/kernel.asm	/^  os = s;$/;"	d
 outofinodes	user/usertests.c	/^outofinodes(char *s)$/;"	f
 outstanding	kernel/log.c	/^  int outstanding; \/\/ how many FS sys calls are executing.$/;"	m	struct:log	file:
+p	kernel/kernel.asm	/^  p = (char*)PGROUNDUP((uint64)pa_start);$/;"	d
+p	kernel/kernel.asm	/^  p = allocproc();$/;"	d
+p	kernel/kernel.asm	/^  p = myproc();$/;"	d
+pa	kernel/kernel.asm	/^    pa = PTE2PA(*pte);$/;"	d
+pa	kernel/kernel.asm	/^    pa = walkaddr(pagetable, va + i);$/;"	d
+pa	kernel/kernel.asm	/^  pa = PTE2PA(*pte);$/;"	d
+pa0	kernel/kernel.asm	/^    pa0 = PTE2PA(*pte);$/;"	d
+pa0	kernel/kernel.asm	/^    pa0 = walkaddr(pagetable, va0);$/;"	d
 paddr	kernel/elf.h	/^  uint64 paddr;$/;"	m	struct:proghdr
+pagetable	kernel/kernel.asm	/^      pagetable = (pagetable_t)PTE2PA(*pte);$/;"	d
+pagetable	kernel/kernel.asm	/^  pagetable = (pagetable_t) kalloc();$/;"	d
+pagetable	kernel/kernel.asm	/^  pagetable = uvmcreate();$/;"	d
 pagetable	kernel/proc.h	/^  pagetable_t pagetable;       \/\/ User page table$/;"	m	struct:proc
+pagetable_t	kernel/kernel.asm	/^pagetable_t$/;"	l
 pagetable_t	kernel/riscv.h	/^typedef uint64 *pagetable_t; \/\/ 512 PTEs$/;"	t
 panic	kernel/printf.c	/^panic(char *s)$/;"	f
 panic	user/sh.c	/^panic(char *s)$/;"	f
+panicked	kernel/kernel.asm	/^  panicked = 1; \/\/ freeze uart output from other CPUs$/;"	d
 panicked	kernel/printf.c	/^volatile int panicked = 0;$/;"	v
 parent	kernel/proc.h	/^  struct proc *parent;         \/\/ Parent process$/;"	m	struct:proc	typeref:struct:proc::proc
 parseblock	user/sh.c	/^parseblock(char **ps, char *es)$/;"	f
@@ -615,11 +746,17 @@ parsepipe	user/sh.c	/^parsepipe(char **ps, char *es)$/;"	f
 parseredirs	user/sh.c	/^parseredirs(struct cmd *cmd, char **ps, char *es)$/;"	f
 pde_t	kernel/types.h	/^typedef uint64 pde_t;$/;"	t
 peek	user/sh.c	/^peek(char **ps, char *es, char *toks)$/;"	f
+perm	kernel/kernel.asm	/^      perm = PTE_X;$/;"	d
 pgbug	user/usertests.c	/^pgbug(char *s)$/;"	f
 phentsize	kernel/elf.h	/^  ushort phentsize;$/;"	m	struct:elfhdr
 phnum	kernel/elf.h	/^  ushort phnum;$/;"	m	struct:elfhdr
 phoff	kernel/elf.h	/^  uint64 phoff;$/;"	m	struct:elfhdr
+pi	kernel/kernel.asm	/^  pi = 0;$/;"	d
+pid	kernel/kernel.asm	/^          pid = pp->pid;$/;"	d
+pid	kernel/kernel.asm	/^  pid = nextpid;$/;"	d
+pid	kernel/kernel.asm	/^  pid = np->pid;$/;"	d
 pid	kernel/proc.h	/^  int pid;                     \/\/ Process ID$/;"	m	struct:proc
+pid	kernel/pstat.h	/^  int pid[NPROC];     \/\/ the PID of each process $/;"	m	struct:pstat
 pid	kernel/sleeplock.h	/^  int pid;           \/\/ Process holding lock$/;"	m	struct:sleeplock
 pid_lock	kernel/proc.c	/^struct spinlock pid_lock;$/;"	v	typeref:struct:spinlock
 pipe	kernel/file.h	/^  struct pipe *pipe; \/\/ FD_PIPE$/;"	m	struct:file	typeref:struct:file::pipe
@@ -645,6 +782,7 @@ printf	user/printf.c	/^printf(const char *fmt, ...)$/;"	f
 printfinit	kernel/printf.c	/^printfinit(void)$/;"	f
 printint	kernel/printf.c	/^printint(long long xx, int base, int sign)$/;"	f	file:
 printint	user/printf.c	/^printint(int fd, int xx, int base, int sgn)$/;"	f	file:
+printpinfo	user/lotterytest.c	/^void printpinfo(int pid)$/;"	f
 printptr	kernel/printf.c	/^printptr(uint64 x)$/;"	f	file:
 printptr	user/printf.c	/^printptr(int fd, uint64 x) {$/;"	f	file:
 proc	kernel/proc.c	/^struct proc proc[NPROC];$/;"	v	typeref:struct:proc
@@ -657,12 +795,23 @@ procdump	kernel/proc.c	/^procdump(void)$/;"	f
 procinit	kernel/proc.c	/^procinit(void)$/;"	f
 procstate	kernel/proc.h	/^enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };$/;"	g
 proghdr	kernel/elf.h	/^struct proghdr {$/;"	s
+prot	kernel/vma.h	/^  int prot[MAXVMA];$/;"	m	struct:vma
+pstat	kernel/pstat.h	/^struct pstat {$/;"	s
+pte	kernel/kernel.asm	/^    pte = walk(pagetable, va0, 0);$/;"	d
+pte	kernel/kernel.asm	/^  pte = walk(pagetable, va, 0);$/;"	d
+pte_t	kernel/kernel.asm	/^pte_t *$/;"	l
 pte_t	kernel/riscv.h	/^typedef uint64 pte_t;$/;"	t
 ptr	user/umalloc.c	/^    union header *ptr;$/;"	m	struct:header::__anon9	typeref:union:header::__anon9::header	file:
 push_off	kernel/spinlock.c	/^push_off(void)$/;"	f
 putc	user/printf.c	/^putc(int fd, char c)$/;"	f	file:
 quicktests	user/usertests.c	/^} quicktests[] = {$/;"	v	typeref:struct:test
 r	kernel/console.c	/^  uint r;  \/\/ Read index$/;"	m	struct:__anon2	file:
+r	kernel/kernel.asm	/^    r = devsw[f->major].read(1, addr, n);$/;"	d
+r	kernel/kernel.asm	/^    r = piperead(f->pipe, addr, n);$/;"	d
+r	kernel/kernel.asm	/^  r = (lk->locked && lk->cpu == mycpu());$/;"	d
+r	kernel/kernel.asm	/^  r = (struct run*)pa;$/;"	d
+r	kernel/kernel.asm	/^  r = kmem.freelist;$/;"	d
+r	kernel/kernel.asm	/^  r = lk->locked && (lk->pid == myproc()->pid);$/;"	d
 r_mcounteren	kernel/riscv.h	/^r_mcounteren()$/;"	f
 r_medeleg	kernel/riscv.h	/^r_medeleg()$/;"	f
 r_menvcfg	kernel/riscv.h	/^r_menvcfg()$/;"	f
@@ -687,6 +836,7 @@ ra	kernel/proc.h	/^  \/*  40 *\/ uint64 ra;$/;"	m	struct:trapframe
 ra	kernel/proc.h	/^  uint64 ra;$/;"	m	struct:context
 rand	user/grind.c	/^rand(void)$/;"	f
 rand_next	user/grind.c	/^unsigned long rand_next = 1;$/;"	v
+random	kernel/proc.c	/^random(uint64 max){$/;"	f
 read	kernel/file.h	/^  int (*read)(int, uint64, int);$/;"	m	struct:devsw
 read_head	kernel/log.c	/^read_head(void)$/;"	f	file:
 readable	kernel/file.h	/^  char readable;$/;"	m	struct:file
@@ -705,6 +855,9 @@ reparent	kernel/proc.c	/^reparent(struct proc *p)$/;"	f
 reparent	user/usertests.c	/^reparent(char *s)$/;"	f
 reparent2	user/usertests.c	/^reparent2(char *s)$/;"	f
 reserved	kernel/virtio.h	/^  uint32 reserved;$/;"	m	struct:virtio_blk_req
+ret	kernel/kernel.asm	/^    ret = (i == n ? n : -1);$/;"	d
+ret	kernel/kernel.asm	/^    ret = devsw[f->major].write(1, addr, n);$/;"	d
+ret	kernel/kernel.asm	/^    ret = pipewrite(f->pipe, addr, n);$/;"	d
 right	user/sh.c	/^  struct cmd *right;$/;"	m	struct:listcmd	typeref:struct:listcmd::cmd	file:
 right	user/sh.c	/^  struct cmd *right;$/;"	m	struct:pipecmd	typeref:struct:pipecmd::cmd	file:
 ring	kernel/virtio.h	/^  struct virtq_used_elem ring[NUM];$/;"	m	struct:virtq_used	typeref:struct:virtq_used::virtq_used_elem
@@ -717,16 +870,20 @@ run	user/usertests.c	/^run(void f(char *), char *s) {$/;"	f
 runcmd	user/sh.c	/^runcmd(struct cmd *cmd)$/;"	f
 runtests	user/usertests.c	/^runtests(struct test *tests, char *justone, int continuous) {$/;"	f
 rwsbrk	user/usertests.c	/^rwsbrk()$/;"	f
+s	kernel/kernel.asm	/^        s = "(null)";$/;"	d
+s	kernel/kernel.asm	/^  s = src;$/;"	d
 s	user/umalloc.c	/^  } s;$/;"	m	union:header	typeref:struct:header::__anon9	file:
 s	user/usertests.c	/^  char *s;$/;"	m	struct:test	file:
 s0	kernel/proc.h	/^  \/*  96 *\/ uint64 s0;$/;"	m	struct:trapframe
 s0	kernel/proc.h	/^  uint64 s0;$/;"	m	struct:context
+s1	kernel/kernel.asm	/^  s1 = v1;$/;"	d
 s1	kernel/proc.h	/^  \/* 104 *\/ uint64 s1;$/;"	m	struct:trapframe
 s1	kernel/proc.h	/^  uint64 s1;$/;"	m	struct:context
 s10	kernel/proc.h	/^  \/* 240 *\/ uint64 s10;$/;"	m	struct:trapframe
 s10	kernel/proc.h	/^  uint64 s10;$/;"	m	struct:context
 s11	kernel/proc.h	/^  \/* 248 *\/ uint64 s11;$/;"	m	struct:trapframe
 s11	kernel/proc.h	/^  uint64 s11;$/;"	m	struct:context
+s2	kernel/kernel.asm	/^  s2 = v2;$/;"	d
 s2	kernel/proc.h	/^  \/* 176 *\/ uint64 s2;$/;"	m	struct:trapframe
 s2	kernel/proc.h	/^  uint64 s2;$/;"	m	struct:context
 s3	kernel/proc.h	/^  \/* 184 *\/ uint64 s3;$/;"	m	struct:trapframe
@@ -773,23 +930,42 @@ skipelem	kernel/fs.c	/^skipelem(char *path, char *name)$/;"	f	file:
 sleep	kernel/proc.c	/^sleep(void *chan, struct spinlock *lk)$/;"	f
 sleeplock	kernel/sleeplock.h	/^struct sleeplock {$/;"	s
 slowtests	user/usertests.c	/^struct test slowtests[] = {$/;"	v	typeref:struct:test
+sp	kernel/kernel.asm	/^  sp = sz;$/;"	d
 sp	kernel/proc.h	/^  \/*  48 *\/ uint64 sp;$/;"	m	struct:trapframe
 sp	kernel/proc.h	/^  uint64 sp;$/;"	m	struct:context
 spin	kernel/entry.S	/^spin:$/;"	l
+spin	user/lotterytest.c	/^void spin() {$/;"	f
 spinlock	kernel/spinlock.h	/^struct spinlock {$/;"	s
+srcva	kernel/kernel.asm	/^    srcva = va0 + PGSIZE;$/;"	d
 stack0	kernel/start.c	/^__attribute__ ((aligned (16))) char stack0[4096 * NCPU];$/;"	v
+stackbase	kernel/kernel.asm	/^  stackbase = sp - USERSTACK*PGSIZE;$/;"	d
 stacktest	user/usertests.c	/^stacktest(char *s)$/;"	f
 start	kernel/log.c	/^  int start;$/;"	m	struct:log	file:
 start	kernel/start.c	/^start()$/;"	f
 start	user/initcode.S	/^start:$/;"	l
+start	user/initcode.asm	/^start:$/;"	l
 start	user/ulib.c	/^start()$/;"	f
+started	kernel/kernel.asm	/^    started = 1;$/;"	d
 started	kernel/main.c	/^volatile static int started = 0;$/;"	v	file:
 stat	kernel/stat.h	/^struct stat {$/;"	s
 stat	mkfs/mkfs.c	8;"	d	file:
 stat	user/ulib.c	/^stat(const char *n, struct stat *st)$/;"	f
+state	kernel/kernel.asm	/^      state = "???";$/;"	d
+state	kernel/kernel.asm	/^      state = states[p->state];$/;"	d
 state	kernel/proc.h	/^  enum procstate state;        \/\/ Process state$/;"	m	struct:proc	typeref:enum:proc::procstate
 stati	kernel/fs.c	/^stati(struct inode *ip, struct stat *st)$/;"	f
+static	kernel/kernel.asm	/^static char digits[] = "0123456789abcdef";$/;"	l
+static	kernel/kernel.asm	/^static inline uint64$/;"	l
+static	kernel/kernel.asm	/^static inline void $/;"	l
+static	kernel/kernel.asm	/^static inline void$/;"	l
+static	kernel/kernel.asm	/^static int loadseg(pde_t *, uint64, struct inode *, uint, uint);$/;"	l
+static	kernel/kernel.asm	/^static int$/;"	l
+static	kernel/kernel.asm	/^static struct inode*$/;"	t
+static	kernel/kernel.asm	/^static uint$/;"	l
+static	kernel/kernel.asm	/^static uint64$/;"	l
+static	kernel/kernel.asm	/^static void$/;"	l
 static_assert	mkfs/mkfs.c	15;"	d	file:
+status	kernel/kernel.asm	/^  status = *R(VIRTIO_MMIO_STATUS);$/;"	d
 status	kernel/virtio_disk.c	/^    char status;$/;"	m	struct:disk::__anon7	file:
 strchr	user/ulib.c	/^strchr(const char *s, char c)$/;"	f
 strcmp	user/ulib.c	/^strcmp(const char *p, const char *q)$/;"	f
@@ -798,6 +974,10 @@ strlen	kernel/string.c	/^strlen(const char *s)$/;"	f
 strlen	user/ulib.c	/^strlen(const char *s)$/;"	f
 strncmp	kernel/string.c	/^strncmp(const char *p, const char *q, uint n)$/;"	f
 strncpy	kernel/string.c	/^strncpy(char *s, const char *t, int n)$/;"	f
+struct	kernel/kernel.asm	/^  struct proc *p = c->proc;$/;"	l
+struct	kernel/kernel.asm	/^  struct proc *p = myproc();$/;"	l
+struct	kernel/kernel.asm	/^  struct proc *p;$/;"	l
+struct	kernel/kernel.asm	/^  struct proc *pr = myproc();$/;"	l
 subdir	user/usertests.c	/^subdir(char *s)$/;"	f
 superblock	kernel/fs.h	/^struct superblock {$/;"	s
 swtch	kernel/swtch.S	/^swtch:$/;"	l
@@ -815,6 +995,8 @@ sys_kill	kernel/sysproc.c	/^sys_kill(void)$/;"	f
 sys_link	kernel/sysfile.c	/^sys_link(void)$/;"	f
 sys_mkdir	kernel/sysfile.c	/^sys_mkdir(void)$/;"	f
 sys_mknod	kernel/sysfile.c	/^sys_mknod(void)$/;"	f
+sys_mmap	kernel/sysfile.c	/^sys_mmap(void){$/;"	f
+sys_munmap	kernel/sysfile.c	/^sys_munmap(void){$/;"	f
 sys_open	kernel/sysfile.c	/^sys_open(void)$/;"	f
 sys_pipe	kernel/sysfile.c	/^sys_pipe(void)$/;"	f
 sys_read	kernel/sysfile.c	/^sys_read(void)$/;"	f
@@ -827,6 +1009,11 @@ sys_wait	kernel/sysproc.c	/^sys_wait(void)$/;"	f
 sys_write	kernel/sysfile.c	/^sys_write(void)$/;"	f
 syscall	kernel/syscall.c	/^syscall(void)$/;"	f
 syscalls	kernel/syscall.c	/^static uint64 (*syscalls[])(void) = {$/;"	v	file:
+sz	kernel/kernel.asm	/^    sz = sz1;$/;"	d
+sz	kernel/kernel.asm	/^    sz = uvmdealloc(p->pagetable, sz, sz + n);$/;"	d
+sz	kernel/kernel.asm	/^  sz = PGROUNDUP(sz);$/;"	d
+sz	kernel/kernel.asm	/^  sz = p->sz;$/;"	d
+sz	kernel/kernel.asm	/^  sz = sz1;$/;"	d
 sz	kernel/proc.h	/^  uint64 sz;                   \/\/ Size of process memory (bytes)$/;"	m	struct:proc
 t0	kernel/proc.h	/^  \/*  72 *\/ uint64 t0;$/;"	m	struct:trapframe
 t1	kernel/proc.h	/^  \/*  80 *\/ uint64 t1;$/;"	m	struct:trapframe
@@ -835,11 +1022,19 @@ t3	kernel/proc.h	/^  \/* 256 *\/ uint64 t3;$/;"	m	struct:trapframe
 t4	kernel/proc.h	/^  \/* 264 *\/ uint64 t4;$/;"	m	struct:trapframe
 t5	kernel/proc.h	/^  \/* 272 *\/ uint64 t5;$/;"	m	struct:trapframe
 t6	kernel/proc.h	/^  \/* 280 *\/ uint64 t6;$/;"	m	struct:trapframe
+target	kernel/kernel.asm	/^  target = n;$/;"	d
 test	user/usertests.c	/^struct test {$/;"	s	file:
-tickets	kernel/proc.h	/^  uint64 tickets;	       \/\/ Process tickets$/;"	m	struct:proc
+test_child	user/testsettickets.c	/^float test_child(){$/;"	f
+testname	user/nmaptest.c	/^char *testname = "???";$/;"	v
+tickets	kernel/proc.h	/^  uint64 tickets;	             \/\/ Process tickets$/;"	m	struct:proc
+tickets	kernel/pstat.h	/^  int tickets[NPROC]; \/\/ the number of tickets this process has$/;"	m	struct:pstat
+ticks	kernel/proc.h	/^  uint64 ticks;                \/\/ Process tickts $/;"	m	struct:proc
+ticks	kernel/pstat.h	/^  int ticks[NPROC];   \/\/ the number of ticks each process has accumulated $/;"	m	struct:pstat
 ticks	kernel/trap.c	/^uint ticks;$/;"	v
+ticks0	kernel/kernel.asm	/^  ticks0 = ticks;$/;"	d
 tickslock	kernel/trap.c	/^struct spinlock tickslock;$/;"	v	typeref:struct:spinlock
 timerinit	kernel/start.c	/^timerinit()$/;"	f
+tot	kernel/kernel.asm	/^      tot = -1;$/;"	d
 tp	kernel/proc.h	/^  \/*  64 *\/ uint64 tp;$/;"	m	struct:trapframe
 trampoline	kernel/trampoline.S	/^trampoline:$/;"	l
 trapframe	kernel/proc.h	/^  struct trapframe *trapframe; \/\/ data page for trampoline.S$/;"	m	struct:proc	typeref:struct:proc::trapframe
@@ -877,6 +1072,7 @@ uchar	kernel/types.h	/^typedef unsigned char  uchar;$/;"	t
 uint	kernel/types.h	/^typedef unsigned int   uint;$/;"	t
 uint16	kernel/types.h	/^typedef unsigned short uint16;$/;"	t
 uint32	kernel/types.h	/^typedef unsigned int  uint32;$/;"	t
+uint64	kernel/kernel.asm	/^uint64$/;"	l
 uint64	kernel/types.h	/^typedef unsigned long uint64;$/;"	t
 uint8	kernel/types.h	/^typedef unsigned char uint8;$/;"	t
 uninit	user/usertests.c	/^char uninit[10000];$/;"	v
@@ -898,6 +1094,8 @@ uvmdealloc	kernel/vm.c	/^uvmdealloc(pagetable_t pagetable, uint64 oldsz, uint64 
 uvmfirst	kernel/vm.c	/^uvmfirst(pagetable_t pagetable, uchar *src, uint sz)$/;"	f
 uvmfree	kernel/vm.c	/^uvmfree(pagetable_t pagetable, uint64 sz)$/;"	f
 uvmunmap	kernel/vm.c	/^uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)$/;"	f
+va0	kernel/kernel.asm	/^    va0 = PGROUNDDOWN(dstva);$/;"	d
+va0	kernel/kernel.asm	/^    va0 = PGROUNDDOWN(srcva);$/;"	d
 vaddr	kernel/elf.h	/^  uint64 vaddr;$/;"	m	struct:proghdr
 valid	kernel/buf.h	/^  int valid;   \/\/ has data been read from disk?$/;"	m	struct:buf
 valid	kernel/file.h	/^  int valid;          \/\/ inode has been read from disk?$/;"	m	struct:inode
@@ -912,6 +1110,14 @@ virtq_avail	kernel/virtio.h	/^struct virtq_avail {$/;"	s
 virtq_desc	kernel/virtio.h	/^struct virtq_desc {$/;"	s
 virtq_used	kernel/virtio.h	/^struct virtq_used {$/;"	s
 virtq_used_elem	kernel/virtio.h	/^struct virtq_used_elem {$/;"	s
+vma	kernel/vma.h	/^struct vma {$/;"	s
+vma_find	kernel/vma.c	/^vma_find(struct vma *vma, uint64 addr){$/;"	f
+vma_free	kernel/vma.c	/^vma_free(struct vma * vma){$/;"	f
+vma_list	kernel/proc.h	/^  struct vma vma_list;         \/\/ VMA $/;"	m	struct:proc	typeref:struct:proc::vma
+void	kernel/kernel.asm	/^void *$/;"	l
+void	kernel/kernel.asm	/^void uartstart();$/;"	l
+void	kernel/kernel.asm	/^void$/;"	l
+volatile	kernel/kernel.asm	/^volatile static int started = 0;$/;"	l
 vprintf	user/printf.c	/^vprintf(int fd, const char *fmt, va_list ap)$/;"	f
 w	kernel/console.c	/^  uint w;  \/\/ Write index$/;"	m	struct:__anon2	file:
 w_mcounteren	kernel/riscv.h	/^w_mcounteren(uint64 x)$/;"	f
@@ -948,9 +1154,12 @@ writei	kernel/fs.c	/^writei(struct inode *ip, int user_src, uint64 src, uint off
 writeopen	kernel/pipe.c	/^  int writeopen;  \/\/ write fd is still open$/;"	m	struct:pipe	file:
 writetest	user/usertests.c	/^writetest(char *s)$/;"	f
 wsect	mkfs/mkfs.c	/^wsect(uint sec, void *buf)$/;"	f
+x	kernel/kernel.asm	/^    x = -xx;$/;"	d
+x	kernel/kernel.asm	/^    x = xx;$/;"	d
 x	user/umalloc.c	/^  Align x;$/;"	m	union:header	file:
 xint	mkfs/mkfs.c	/^xint(uint x)$/;"	f
 xshort	mkfs/mkfs.c	/^xshort(ushort x)$/;"	f
 xstate	kernel/proc.h	/^  int xstate;                  \/\/ Exit status to be returned to parent's wait$/;"	m	struct:proc
+xticks	kernel/kernel.asm	/^  xticks = ticks;$/;"	d
 yield	kernel/proc.c	/^yield(void)$/;"	f
 zeroes	mkfs/mkfs.c	/^char zeroes[BSIZE];$/;"	v

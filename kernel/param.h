@@ -1,3 +1,5 @@
+#ifndef _PARAMS_H_
+#define _PARAMS_H_
 #define NPROC        64  // maximum number of processes
 #define NCPU          8  // maximum number of CPUs
 #define NOFILE       16  // open files per process
@@ -12,4 +14,5 @@
 #define FSSIZE       2000  // size of file system in blocks
 #define MAXPATH      128   // maximum file path name
 #define USERSTACK    1     // user stack pages
-
+#define MAXVMA       16    // maximum number of vma per process
+#endif 
