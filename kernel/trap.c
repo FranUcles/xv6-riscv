@@ -73,12 +73,12 @@ usertrap(void)
     // Get the fault page address
     uint64 fault_addr = r_stval();
     // Check if the address is valid
-    /*
-    if (fault_addr < 0 || fault_addr > p->sz){
+    // We assume the part below sz is always mapped
+    // TODO: CHECK THIS IS ALWAYS TRUE 
+    if (fault_addr < 0){
       setkilled(p);
       goto finished;
     }
-    */
     // Get the valid VMA
     int valid_vma = vma_find(&(p->vma_list), fault_addr);
     if (valid_vma == -1){
@@ -98,12 +98,16 @@ usertrap(void)
     // Get the page address of the virtual address 
     uint64 fault_page_addr = PGROUNDDOWN(fault_addr);
     // Set the physical page into the virtual address space
-    int perms = PTE_V | PTE_U | PTE_R | (can_write == 1 ? PTE_W : PTE_W); // unknown the PTE_W ALWAYS TRUE 
+    int perms = PTE_V | PTE_U | PTE_R | (can_write == 1 ? PTE_W : 0);
     mappages(p->pagetable, fault_page_addr, PGSIZE, new_physical_addr, perms);
     // Read the content of the file in the VMA
     int page_offset = fault_page_addr - p->vma_list.addr[valid_vma];
     struct file* mapped_file = p->vma_list.file[valid_vma];
-    readi(mapped_file->ip, 1, fault_page_addr, p->vma_list.offset[valid_vma] + page_offset, PGSIZE);
+    begin_op();
+    ilock(mapped_file->ip);
+    readi(mapped_file->ip, 0, new_physical_addr, p->vma_list.offset[valid_vma] + page_offset, PGSIZE);
+    iunlock(mapped_file->ip);
+    end_op();
   } else if((which_dev = devintr()) != 0){
     // ok
   } else {

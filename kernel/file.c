@@ -191,12 +191,12 @@ mmap(uint64 addr, int length, int prot, int flags, int fd, struct file* file, in
     // Select the new virtual address
     addr = vma_get_new_addr(&(p->vma_list), length); 
   }
- // Increase the references to the file
- filedup(file);
  // We fill the VMA 
  int correct_filled = vma_fill_vma(&(p->vma_list), free_vma_index, addr, length, prot, flags, fd, offset, file);
  if (correct_filled == -1)
     return -1;
+ // Increase the references to the file
+ filedup(file);
  return addr; 
 }
 

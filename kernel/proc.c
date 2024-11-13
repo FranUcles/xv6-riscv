@@ -304,6 +304,9 @@ fork(void)
   }
   np->sz = p->sz;
 
+  // Copy vma from parent to child
+  vma_copy(&(p->vma_list), &(np->vma_list));
+
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
 

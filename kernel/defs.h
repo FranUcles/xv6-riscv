@@ -125,6 +125,7 @@ int             vma_find_free(struct vma *vma);
 uint64          vma_get_new_addr(struct vma *vma, int length);
 int             vma_fill_vma(struct vma *vma, int vma_index, uint64 addr, int length, int prot, int flags, int fd, int offset, struct file *file);
 int             vma_free_pages(struct vma *vma, int index, uint64 init_va, uint64 end_va, pagetable_t pagetable);
+void            vma_copy(struct vma *vma_src, struct vma* vma_dst);
 
 // swtch.S
 void            swtch(struct context*, struct context*);

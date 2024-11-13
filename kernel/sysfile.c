@@ -506,12 +506,13 @@ sys_pipe(void)
 
 uint64
 sys_mmap(void){
-  int addr, length, prot, flags, fd, offset;
+  uint64 addr;
+  int length, prot, flags, fd, offset;
   struct file * mf;
 
-  argint(0, &addr);
+  argaddr(0, &addr);
   if (addr < 0)
-    return -1; // Cannot map a negattive amount of bytes
+    return -1; // Cannot map to a negative address
 
   argint(1, &length);
   if (length < 0)
@@ -531,6 +532,7 @@ sys_mmap(void){
   argint(5, &offset);
   if (offset < 0 )
     return -1; // Cannot selecte a negative offset
+
   // Check we are not trying to map a readonly file on a read/write map
   // when we are on a SHARED mapping
   if (flags == MAP_SHARED){
@@ -549,9 +551,9 @@ sys_munmap(void){
   int length;
   argaddr(0, &addr);
   if (addr < 0)
-    return -1;
+    return -1; // Cannot map on a negative address 
   argint(1, &length);
   if (length < 0)
-    return -1;
+    return -1; // Cannot map a negative ammount of bytes
   return munmap(addr, length);
 }

@@ -9,7 +9,7 @@
 void
 vma_free(struct vma * vma, struct proc * p){
   for (int i = 0; i < MAXVMA; i++){
-    vma_free_pages(vma, i, vma->addr[i], vma->addr[i] + vma->offset[i], p->pagetable);
+    vma_free_pages(vma, i, vma->addr[i], vma->addr[i] + vma->length[i], p->pagetable);
     vma->addr[i] = 0;
     vma->length[i] = 0;
     vma->prot[i] = 0;
@@ -20,8 +20,8 @@ vma_free(struct vma * vma, struct proc * p){
       fileclose(vma->file[i]);
     }
     vma->file[i] = 0;
-    vma->bottom_addr = INITIAL_BOTTOM_ADDR;
   }
+  vma->bottom_addr = INITIAL_BOTTOM_ADDR;
 }
 
 int
@@ -63,7 +63,6 @@ vma_free_pages(struct vma *vma, int index, uint64 init_va, uint64 end_va, pageta
     // we need to write the content on the file 
     if (vma->flags[index] == MAP_SHARED){
         struct file * f = vma->file[index];
-        // TODO: CHECK IF WE NEED TO TAKE ANY LOCK
         begin_op();
         ilock(f->ip);
         writei(f->ip, 1, page, vma->offset[index] + (page - init_va), PGSIZE);
@@ -87,4 +86,21 @@ vma_fill_vma(struct vma *vma, int vma_index, uint64 addr, int length, int prot, 
   vma->offset[vma_index] = offset;
   vma->file[vma_index] = file;
  return 0;
+}
+
+void 
+vma_copy(struct vma *vma_src, struct vma *vma_dst){
+  for (int i = 0; i < MAXVMA; i++){
+    vma_dst->addr[i] = vma_src->addr[i];
+    vma_dst->length[i] = vma_src->length[i];
+    vma_dst->prot[i] = vma_src->prot[i];
+    vma_dst->flags[i] = vma_src->flags[i];
+    vma_dst->fd[i] = vma_src->fd[i];
+    vma_dst->offset[i] = vma_src->offset[i];
+    if (vma_src->file[i] != 0){
+      filedup(vma_src->file[i]);
+    }
+    vma_dst->file[i] = vma_src->file[i];
+  }
+  vma_dst->bottom_addr = vma_src->bottom_addr;
 }
