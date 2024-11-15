@@ -163,7 +163,6 @@ freeproc(struct proc *p)
   if(p->trapframe)
     kfree((void*)p->trapframe);
   p->trapframe = 0;
-  vma_free(&(p->vma_list), p);
   if(p->pagetable)
     proc_freepagetable(p->pagetable, p->sz);
   p->pagetable = 0;
@@ -305,7 +304,7 @@ fork(void)
   np->sz = p->sz;
 
   // Copy vma from parent to child
-  vma_copy(&(p->vma_list), &(np->vma_list));
+  vma_copy(p, np);
 
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
@@ -373,6 +372,9 @@ exit(int status)
       p->ofile[fd] = 0;
     }
   }
+
+  // Free all the vmas
+  vma_free(&(p->vma_list), p);
 
   begin_op();
   iput(p->cwd);

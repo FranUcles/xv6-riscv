@@ -35,7 +35,7 @@ vma_find(struct vma *vma, uint64 addr){
 int
 vma_find_free(struct vma *vma){
   for (int i = 0; i < MAXVMA; i++)
-    if (vma->addr[i] == 0)
+    if (vma->length[i] == 0)
       return i;
   return -1;
 }
@@ -89,8 +89,12 @@ vma_fill_vma(struct vma *vma, int vma_index, uint64 addr, int length, int prot, 
 }
 
 void 
-vma_copy(struct vma *vma_src, struct vma *vma_dst){
+vma_copy(struct proc *proc_src, struct proc *proc_dst){
+  struct vma* vma_src = &(proc_src->vma_list);
+  struct vma* vma_dst = &(proc_dst->vma_list);
   for (int i = 0; i < MAXVMA; i++){
+    // Copy the physical pages mapped to the virtual addresses
+    uvmcopypages(vma_src->addr[i], vma_src->addr[i] + vma_src->length[i], proc_src->pagetable, proc_dst->pagetable); 
     vma_dst->addr[i] = vma_src->addr[i];
     vma_dst->length[i] = vma_src->length[i];
     vma_dst->prot[i] = vma_src->prot[i];

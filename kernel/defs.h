@@ -125,7 +125,7 @@ int             vma_find_free(struct vma *vma);
 uint64          vma_get_new_addr(struct vma *vma, int length);
 int             vma_fill_vma(struct vma *vma, int vma_index, uint64 addr, int length, int prot, int flags, int fd, int offset, struct file *file);
 int             vma_free_pages(struct vma *vma, int index, uint64 init_va, uint64 end_va, pagetable_t pagetable);
-void            vma_copy(struct vma *vma_src, struct vma* vma_dst);
+void            vma_copy(struct proc* proc_src, struct proc* proc_dst);
 
 // swtch.S
 void            swtch(struct context*, struct context*);
@@ -193,6 +193,7 @@ uint64          walkaddr(pagetable_t, uint64);
 int             copyout(pagetable_t, uint64, char *, uint64);
 int             copyin(pagetable_t, char *, uint64, uint64);
 int             copyinstr(pagetable_t, char *, uint64, uint64);
+int             uvmcopypages(uint64 init_va, uint64 end_va, pagetable_t src, pagetable_t dst);
 
 // plic.c
 void            plicinit(void);
