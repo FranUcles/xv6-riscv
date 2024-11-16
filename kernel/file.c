@@ -181,13 +181,13 @@ filewrite(struct file *f, uint64 addr, int n)
 }
 
 uint64
-mmap(uint64 addr, int length, int prot, int flags, int fd, struct file* file, int offset){
+mmap(uint64 addr, int length, int prot, int flags, int fd, struct file* file, int offset, int force_addr){
  struct proc *p = myproc();
  int free_vma_index = vma_find_free(&(p->vma_list));
  // In case there is no free VMA, we return error 
  if (free_vma_index == -1)
     return -1;
- if (addr == 0)
+ if (addr == 0 && force_addr == 0)
     // Select the new virtual address
     addr = vma_get_new_addr(&(p->vma_list), length); 
  // We fill the VMA 

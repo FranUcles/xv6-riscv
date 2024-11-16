@@ -6,8 +6,10 @@
 #include "proc.h"
 #include "defs.h"
 #include "elf.h"
+#include "fcntl.h"
+#include "file.h"
 
-static int loadseg(pde_t *, uint64, struct inode *, uint, uint);
+//static int loadseg(pde_t *, uint64, struct inode *, uint, uint);
 
 int flags2perm(int flags)
 {
@@ -48,6 +50,17 @@ exec(char *path, char **argv)
 
   if((pagetable = proc_pagetable(p)) == 0)
     goto bad;
+  // Allocate a new struct file 
+  struct file* program_file = filealloc();
+  program_file->type = FD_INODE;
+  program_file->ref = 1;
+  program_file->readable = 1;
+  program_file->writable = 0;
+  program_file->ip = ip;
+  idup(ip);
+  // Allocate a new file descriptor
+  // int fd = fdalloc(program_file); 
+  int fd = 0; // TODO: CHECK IF THIS IS LEGAL
 
   // Load program into memory.
   for(i=0, off=elf.phoff; i<elf.phnum; i++, off+=sizeof(ph)){
@@ -61,13 +74,27 @@ exec(char *path, char **argv)
       goto bad;
     if(ph.vaddr % PGSIZE != 0)
       goto bad;
-    uint64 sz1;
+    // Instead of allocating the physical pages, we just move the sz pointer 
+    /*
     if((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz, flags2perm(ph.flags))) == 0)
-      goto bad;
+      goto 
     sz = sz1;
+    */
+    sz = ph.vaddr + ph.memsz;
+    // Create the vma of that segment
+    int perms = flags2perm(ph.flags);
+    int prots = ((perms & PTE_W) == 0 ? 0 : PROT_WRITE) | ((perms & PTE_X) == 0 ? 0 : PROT_EXEC);
+    mmap(ph.vaddr, ph.memsz, PROT_READ | prots, MAP_PRIVATE, fd, program_file, ph.off, 1); 
+    /*
+    if (result != ph.vaddr)
+      goto bad;
+      */
+    /*
     if(loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
       goto bad;
+    */
   }
+  fileclose(program_file);
   iunlockput(ip);
   end_op();
   ip = 0;
@@ -139,7 +166,7 @@ exec(char *path, char **argv)
   }
   return -1;
 }
-
+/*
 // Load a program segment into pagetable at virtual address va.
 // va must be page-aligned
 // and the pages from va to va+sz must already be mapped.
@@ -164,3 +191,4 @@ loadseg(pagetable_t pagetable, uint64 va, struct inode *ip, uint offset, uint sz
   
   return 0;
 }
+*/

@@ -41,7 +41,7 @@ void            fileinit(void);
 int             fileread(struct file*, uint64, int n);
 int             filestat(struct file*, uint64 addr);
 int             filewrite(struct file*, uint64, int n);
-uint64          mmap(uint64 addr, int length, int prot, int flags, int fd, struct file* file, int offset);
+uint64          mmap(uint64 addr, int length, int prot, int flags, int fd, struct file* file, int offset, int force_addr);
 int             munmap(uint64 addr, int length);    
 
 // fs.c

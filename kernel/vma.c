@@ -116,9 +116,8 @@ vma_copy(struct proc *proc_src, struct proc *proc_dst){
     vma_dst->flags[i] = vma_src->flags[i];
     vma_dst->fd[i] = vma_src->fd[i];
     vma_dst->offset[i] = vma_src->offset[i];
-    if (vma_src->file[i] != 0){
+    if (vma_src->file[i] != 0)
       filedup(vma_src->file[i]);
-    }
     vma_dst->file[i] = vma_src->file[i];
   }
   vma_dst->bottom_addr = vma_src->bottom_addr;

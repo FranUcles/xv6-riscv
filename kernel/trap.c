@@ -69,7 +69,7 @@ usertrap(void)
     intr_on();
 
     syscall();
-  } else if(r_scause() == 13 || r_scause() == 15){
+  } else if(r_scause() == 13 || r_scause() == 15 || r_scause() == 12){
     // Get the fault page address
     uint64 fault_addr = r_stval();
     // Check if the address is valid
@@ -93,6 +93,10 @@ usertrap(void)
     }
     // Get a new physical page
     uint64 new_physical_addr = (uint64) kalloc();
+    if (new_physical_addr == 0){
+      setkilled(p);
+      goto finished;
+    }
     // Clear the page 
     memset((char *)new_physical_addr, 0, PGSIZE);
     // Get the page address of the virtual address 
@@ -104,7 +108,7 @@ usertrap(void)
     uint64 current_pa = walkaddr(p->pagetable, fault_addr);
     if (current_pa != 0 && p->vma_list.flags[valid_vma] == MAP_PRIVATE){
       // We check the case we are the last process referencing the page
-      if (getref((void *)&current_pa) == 1){
+      if (getref((void *)current_pa) == 1){
         pte_t* page_enty = walk(p->pagetable, fault_addr, 0);
         // TODO: CHECK IF IT IS ENOUGH THIS AND WE DO NOT NEED ANYTHING ELSE
         (*page_enty) = *page_enty | PTE_W;
