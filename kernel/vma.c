@@ -16,9 +16,8 @@ vma_free(struct vma * vma, struct proc * p){
     vma->flags[i] = 0;
     vma->fd[i] = 0;
     vma->offset[i] = 0;
-    if (vma->file[i] != 0){
+    if (vma->file[i] != 0)
       fileclose(vma->file[i]);
-    }
     vma->file[i] = 0;
   }
   vma->bottom_addr = INITIAL_BOTTOM_ADDR;
@@ -60,8 +59,10 @@ vma_free_pages(struct vma *vma, int index, uint64 init_va, uint64 end_va, pageta
     if (pa == 0)
       continue;
     // If there is a physical address and the mapping is MAP_SHARED
-    // we need to write the content on the file 
-    if (vma->flags[index] == MAP_SHARED){
+    // we need to write the content on the file (only when the page was written)
+    pte_t pa_pte = *walk(pagetable, page, 0);
+    int modified = (pa_pte & PTE_D);
+    if (modified != 0 && vma->flags[index] == MAP_SHARED){
         struct file * f = vma->file[index];
         begin_op();
         ilock(f->ip);
