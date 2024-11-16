@@ -235,6 +235,7 @@ munmap(uint64 addr, int length){
     // Fill the second part of the vma 
     vma_fill_vma(&(p->vma_list), new_vma_index, addr_p2, length_p2, p->vma_list.prot[vma_index], 
                   p->vma_list.flags[vma_index], p->vma_list.fd[vma_index], offset_p2, p->vma_list.file[vma_index]);
+    filedup(p->vma_list.file[vma_index]);
     // Update the first part of the vma 
     p->vma_list.length[vma_index] = length_p1;
   } 

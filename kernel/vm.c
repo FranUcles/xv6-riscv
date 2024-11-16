@@ -340,31 +340,32 @@ uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
 }
 int 
 uvmcopypages(uint64 init_va, uint64 end_va, pagetable_t src, pagetable_t dst){
-  char *mem;
   for (uint64 page = init_va; page < end_va; page += PGSIZE){
     uint64 pa = walkaddr(src, page);
     if (pa == 0)
       continue;
     // We get the entry of the src pagetable for page (we know it exists)
     pte_t* page_entry_src = walk(src, page, 0);
-    uint flags = PTE_FLAGS(*page_entry_src);
     // We get the direction of the pte corresponding to the va in the dst
     // In case it does not exist, we create it (alloc != 1)
-    //pte_t* page_entry_dst = walk(dst, page, 1);
-    // Now we set the entry of the dst as the entry of the src 
-    if((mem = kalloc()) == 0)
-      return -1;
-    memmove(mem, (char*)pa, PGSIZE);
-    if(mappages(dst, page, PGSIZE, (uint64)mem, flags) != 0){
-      kfree(mem);
-      return -1;
-    }
+    pte_t* page_entry_dst = walk(dst, page, 1);
     // We increase the references of the page
-    // TODO: EXTRA 
-    
-    //incref(&pa);
+    incref((void *)pa);
+    // We set the new content of the dst page table 
+    (*page_entry_dst) = *page_entry_src;
   } 
   return 0;
+}
+
+void 
+uvmunwrite(pagetable_t pagetable, uint64 va){
+  
+  pte_t *pte;
+  
+  pte = walk(pagetable, va, 0);
+  if(pte == 0)
+    panic("uvmwrite");
+  *pte &= ~PTE_W;
 }
 
 // mark a PTE invalid for user access.

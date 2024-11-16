@@ -69,7 +69,12 @@ vma_free_pages(struct vma *vma, int index, uint64 init_va, uint64 end_va, pageta
         iunlock(f->ip);
         end_op();
     }
-    uvmunmap(pagetable, page, 1, 1);
+    // We need to decrease the references of the properly
+    int references = getref((void *)pa);
+    if (references > 1)
+      decref((void * )pa);
+    // If there is only our reference, we need to free the page
+    uvmunmap(pagetable, page, 1, references == 1);
   }
   return unmapped_length;
 }
@@ -93,6 +98,15 @@ vma_copy(struct proc *proc_src, struct proc *proc_dst){
   struct vma* vma_src = &(proc_src->vma_list);
   struct vma* vma_dst = &(proc_dst->vma_list);
   for (int i = 0; i < MAXVMA; i++){
+    // Check if it is an empty vma 
+    if (vma_src->length[i] <= 0)
+      continue;
+    // If the mapping is private, we need to remove the write page permission 
+    if(vma_src->flags[i] == MAP_PRIVATE){
+      for (uint64 page = vma_src->addr[i]; page < vma_src->addr[i] + vma_src->length[i]; page += PGSIZE)
+        if(walkaddr(proc_src->pagetable, page) != 0)
+          uvmunwrite(proc_src->pagetable, page);
+    }
     // Copy the physical pages mapped to the virtual addresses
     uvmcopypages(vma_src->addr[i], vma_src->addr[i] + vma_src->length[i], proc_src->pagetable, proc_dst->pagetable); 
     vma_dst->addr[i] = vma_src->addr[i];

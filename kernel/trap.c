@@ -99,6 +99,26 @@ usertrap(void)
     uint64 fault_page_addr = PGROUNDDOWN(fault_addr);
     // Set the physical page into the virtual address space
     int perms = PTE_V | PTE_U | PTE_R | (can_write == 1 ? PTE_W : 0);
+    // Now we check if the fault was caused by an existing page, but
+    // it is a MAP_PRIVATED area shared by more than one process
+    uint64 current_pa = walkaddr(p->pagetable, fault_addr);
+    if (current_pa != 0 && p->vma_list.flags[valid_vma] == MAP_PRIVATE){
+      // We check the case we are the last process referencing the page
+      if (getref((void *)&current_pa) == 1){
+        pte_t* page_enty = walk(p->pagetable, fault_addr, 0);
+        // TODO: CHECK IF IT IS ENOUGH THIS AND WE DO NOT NEED ANYTHING ELSE
+        (*page_enty) = *page_enty | PTE_W;
+        goto finished;
+      }
+      if (copyin(p->pagetable, (char *)new_physical_addr, fault_addr, PGSIZE) == -1){
+        setkilled(p);
+        goto finished;
+      }
+      // Once we have filled the new page, we drecrease the referneces and
+      // we need to unmap the old physical address
+      decref((void *)current_pa);
+      uvmunmap(p->pagetable, fault_page_addr, 1, 1);
+    }
     mappages(p->pagetable, fault_page_addr, PGSIZE, new_physical_addr, perms);
     // Read the content of the file in the VMA
     int page_offset = fault_page_addr - p->vma_list.addr[valid_vma];
