@@ -5,6 +5,9 @@
 #include "riscv.h"
 #include "defs.h"
 #include "fs.h"
+#include "fcntl.h"
+#include "proc.h"
+#include "file.h"
 
 /*
  * the kernel's page table.
@@ -88,7 +91,7 @@ walk(pagetable_t pagetable, uint64 va, int alloc)
   if(va >= MAXVA)
     panic("walk");
 
-  for(int level = 2; level > 0; level--) {
+  for(int level= 2; level > 0; level--) {
     pte_t *pte = &pagetable[PX(level, va)];
     if(*pte & PTE_V) {
       pagetable = (pagetable_t)PTE2PA(*pte);
@@ -186,13 +189,21 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
   for(a = va; a < va + npages*PGSIZE; a += PGSIZE){
     if((pte = walk(pagetable, a, 0)) == 0)
       panic("uvmunmap: walk");
-    if((*pte & PTE_V) == 0)
-      panic("uvmunmap: not mapped");
+    if((*pte & PTE_V) == 0){
+      // TODO: CHECK IS THERE IS ANOTHER OPTION
+      continue;
+      //panic("uvmunmap: not mapped");
+    }
     if(PTE_FLAGS(*pte) == PTE_V)
       panic("uvmunmap: not a leaf");
     if(do_free){
       uint64 pa = PTE2PA(*pte);
-      kfree((void*)pa);
+      int more_ref = getref((void*)pa) > 1;
+    // TODO: CHECK IS THIS IS LEGAL
+      if (more_ref)
+        decref((void*)pa);
+      else 
+        kfree((void*)pa);
     }
     *pte = 0;
   }
@@ -320,8 +331,10 @@ uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
   for(i = 0; i < sz; i += PGSIZE){
     if((pte = walk(old, i, 0)) == 0)
       panic("uvmcopy: pte should exist");
-    if((*pte & PTE_V) == 0)
-      panic("uvmcopy: page not present");
+    if((*pte & PTE_V) == 0){
+      // TODO: CHECK IF THERE IS ANOTHER OPTION
+      continue;
+    }
     pa = PTE2PA(*pte);
     flags = PTE_FLAGS(*pte);
     if((mem = kalloc()) == 0)
@@ -355,6 +368,39 @@ uvmcopypages(uint64 init_va, uint64 end_va, pagetable_t src, pagetable_t dst){
     (*page_entry_dst) = *page_entry_src;
   } 
   return 0;
+}
+
+int 
+uvm_completemap(pagetable_t pagetable, uint64 page_va){
+  if (page_va % PGSIZE != 0)
+    goto bad;
+  // TODO: CAN WE MAKE SURE THIS FUNCTION WILL BE CALLED ONLY within
+  // THE PAGETABLE OF THE CURRENT THREAD?????
+  struct proc *p = myproc();
+  int valid_vma = vma_find(&(p->vma_list), page_va);
+  if (valid_vma == -1)
+    goto bad;
+  int can_write = p->vma_list.prot[valid_vma] & PROT_WRITE; 
+  int can_execute = (p->vma_list.prot[valid_vma] & PROT_EXEC) != 0;
+  uint64 new_physical_addr = (uint64) kalloc();
+  if (new_physical_addr == 0)
+    goto bad;
+  // Clear the page 
+  memset((char *)new_physical_addr, 0, PGSIZE);
+  // Set the physical page into the virtual address space
+  int perms = PTE_V | PTE_U | PTE_R | (can_write == 1 ? PTE_W : 0) | (can_execute == 1 ? PTE_X : 0);
+  mappages(p->pagetable, page_va, PGSIZE, new_physical_addr, perms);
+  // Read the content of the file in the VMA
+  int page_offset = page_va - p->vma_list.addr[valid_vma];
+  struct file* mapped_file = p->vma_list.file[valid_vma];
+  begin_op();
+  ilock(mapped_file->ip);
+  readi(mapped_file->ip, 0, new_physical_addr, p->vma_list.offset[valid_vma] + page_offset, PGSIZE);
+  iunlock(mapped_file->ip);
+  end_op();
+  return 0;
+bad:
+  return -1;
 }
 
 void 
@@ -422,8 +468,13 @@ copyin(pagetable_t pagetable, char *dst, uint64 srcva, uint64 len)
   while(len > 0){
     va0 = PGROUNDDOWN(srcva);
     pa0 = walkaddr(pagetable, va0);
-    if(pa0 == 0)
-      return -1;
+    if(pa0 == 0){
+      // We try to complete an uncomplete mapping 
+     int correct = uvm_completemap(pagetable, va0);
+      if (correct == -1)
+        return -1;
+      pa0 = walkaddr(pagetable, va0);
+    }
     n = PGSIZE - (srcva - va0);
     if(n > len)
       n = len;

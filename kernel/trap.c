@@ -53,8 +53,10 @@ usertrap(void)
   
   // save user program counter.
   p->trapframe->epc = r_sepc();
+
+  int cause = r_scause();
   
-  if(r_scause() == 8){
+  if(cause == 8){
     // system call
 
     if(killed(p))
@@ -69,7 +71,7 @@ usertrap(void)
     intr_on();
 
     syscall();
-  } else if(r_scause() == 13 || r_scause() == 15 || r_scause() == 12){
+  } else if(cause == 13 || cause == 15 || cause == 12){
     // Get the fault page address
     uint64 fault_addr = r_stval();
     // Check if the address is valid
@@ -87,7 +89,13 @@ usertrap(void)
     }
     // Check if the fault was caused by a WRITE on a protected page
     int can_write = p->vma_list.prot[valid_vma] & PROT_WRITE; 
-    if (r_scause() == 15 && can_write == 0){
+    if (cause == 15 && can_write == 0){
+      setkilled(p);
+      goto finished;
+    }
+    // Check if the fault was caused by an EXECUTE on a non-execution page
+    int can_execute = (p->vma_list.prot[valid_vma] & PROT_EXEC) != 0;
+    if (cause == 12 && can_execute == 0){
       setkilled(p);
       goto finished;
     }
@@ -102,7 +110,7 @@ usertrap(void)
     // Get the page address of the virtual address 
     uint64 fault_page_addr = PGROUNDDOWN(fault_addr);
     // Set the physical page into the virtual address space
-    int perms = PTE_V | PTE_U | PTE_R | (can_write == 1 ? PTE_W : 0);
+    int perms = PTE_V | PTE_U | PTE_R | (can_write == 1 ? PTE_W : 0) | (can_execute == 1 ? PTE_X : 0);
     // Now we check if the fault was caused by an existing page, but
     // it is a MAP_PRIVATED area shared by more than one process
     uint64 current_pa = walkaddr(p->pagetable, fault_addr);

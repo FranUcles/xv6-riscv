@@ -198,6 +198,7 @@ int             copyout(pagetable_t, uint64, char *, uint64);
 int             copyin(pagetable_t, char *, uint64, uint64);
 int             copyinstr(pagetable_t, char *, uint64, uint64);
 int             uvmcopypages(uint64 init_va, uint64 end_va, pagetable_t src, pagetable_t dst);
+int             uvm_completemap(pagetable_t pagetable, uint64 page_va);
 
 // plic.c
 void            plicinit(void);
