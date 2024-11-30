@@ -33,6 +33,9 @@ exec(char *path, char **argv)
   pagetable_t pagetable = 0, oldpagetable;
   struct proc *p = myproc();
 
+  // Free the vma_list of the process
+  vma_free(&(p->vma_list), p);
+
   begin_op();
 
   if((ip = namei(path)) == 0){
