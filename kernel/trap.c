@@ -131,13 +131,20 @@ usertrap(void)
       decref((void *)current_pa);
       uvmunmap(p->pagetable, fault_page_addr, 1, 1);
     }
-    mappages(p->pagetable, fault_page_addr, PGSIZE, new_physical_addr, perms);
-    // Read the content of the file in the VMA
+    if (mappages(p->pagetable, fault_page_addr, PGSIZE, new_physical_addr, perms) != 0){
+      setkilled(p);
+      goto finished;
+    }
+    // We calculate the amount of bytes we need to read from file 
     int page_offset = fault_page_addr - p->vma_list.addr[valid_vma];
+    int file_offset = p->vma_list.offset[valid_vma] + page_offset;
+    int left_vma_offset = p->vma_list.length[valid_vma] - page_offset;
+    int length_to_read = (left_vma_offset > PGSIZE ? PGSIZE : left_vma_offset);
+    // Read the content of the file in the VMA
     struct file* mapped_file = p->vma_list.file[valid_vma];
     begin_op();
     ilock(mapped_file->ip);
-    readi(mapped_file->ip, 0, new_physical_addr, p->vma_list.offset[valid_vma] + page_offset, PGSIZE);
+    readi(mapped_file->ip, 0, new_physical_addr, file_offset, length_to_read);
     iunlock(mapped_file->ip);
     end_op();
   } else if((which_dev = devintr()) != 0){

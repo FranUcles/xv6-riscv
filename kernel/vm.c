@@ -441,8 +441,16 @@ copyout(pagetable_t pagetable, uint64 dstva, char *src, uint64 len)
     if(va0 >= MAXVA)
       return -1;
     pte = walk(pagetable, va0, 0);
-    if(pte == 0 || (*pte & PTE_V) == 0 || (*pte & PTE_U) == 0 ||
-       (*pte & PTE_W) == 0)
+    if (pte == 0)
+      return -1;
+    if ((*pte & PTE_V) == 0){
+      // We try to complete the mapping 
+      int correct = uvm_completemap(pagetable, va0);
+      if (correct == -1)
+        return -1;
+      pte = walk(pagetable, va0, 0);
+    }
+    if((*pte & PTE_U) == 0 || (*pte & PTE_W) == 0)
       return -1;
     pa0 = PTE2PA(*pte);
     n = PGSIZE - (dstva - va0);
@@ -500,8 +508,13 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
   while(got_null == 0 && max > 0){
     va0 = PGROUNDDOWN(srcva);
     pa0 = walkaddr(pagetable, va0);
-    if(pa0 == 0)
-      return -1;
+    if(pa0 == 0){
+      // We try to complete an uncomplete mapping 
+     int correct = uvm_completemap(pagetable, va0);
+      if (correct == -1)
+        return -1;
+      pa0 = walkaddr(pagetable, va0);
+    }
     n = PGSIZE - (srcva - va0);
     if(n > max)
       n = max;

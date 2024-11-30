@@ -68,6 +68,9 @@ malloc(uint nbytes)
 
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
   if((prevp = freep) == 0){
+    // EL PROBLEMA ES BASICAMENTE QUE INTENTA ACCEDER A LA PAGINA DE GUARDA
+    // PORQUE &base es la primera dirección de memoria de la página de guarda
+    // Por lo tanto, el COPYIN te dice que nanai
     base.s.ptr = freep = prevp = &base;
     base.s.size = 0;
   }
