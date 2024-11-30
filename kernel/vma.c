@@ -12,6 +12,7 @@ vma_free(struct vma * vma, struct proc * p){
     vma_free_pages(vma, i, vma->addr[i], vma->addr[i] + vma->length[i], p->pagetable);
     vma->addr[i] = 0;
     vma->length[i] = 0;
+    vma->end_addr[i] = 0;
     vma->prot[i] = 0;
     vma->flags[i] = 0;
     vma->fd[i] = 0;
@@ -26,7 +27,7 @@ vma_free(struct vma * vma, struct proc * p){
 int
 vma_find(struct vma *vma, uint64 addr){
   for (int i = 0; i < MAXVMA; i++)
-    if (addr >= vma->addr[i] && addr < vma->addr[i] + vma->length[i])
+    if (addr >= vma->addr[i] && addr < vma->end_addr[i])
       return i;
   return -1;
 }
@@ -51,8 +52,8 @@ vma_get_new_addr(struct vma *vma, int length){
 int
 vma_free_pages(struct vma *vma, int index, uint64 init_va, uint64 end_va, pagetable_t pagetable){
   int unmapped_length = 0;
-  if (end_va > vma->addr[index] + vma->length[index])
-    end_va = vma->addr[index] + vma->length[index];
+  if (end_va > vma->end_addr[index])
+    end_va = vma->end_addr[index];
   for (uint64 page = init_va; page < end_va; page += PGSIZE){
     unmapped_length += PGSIZE;
     uint64 pa = walkaddr(pagetable, page);
@@ -81,11 +82,12 @@ vma_free_pages(struct vma *vma, int index, uint64 init_va, uint64 end_va, pageta
 }
 
 int
-vma_fill_vma(struct vma *vma, int vma_index, uint64 addr, int length, int prot, int flags, int fd, int offset, struct file *file){
+vma_fill_vma(struct vma *vma, int vma_index, uint64 addr, int length, uint64 end_addr, int prot, int flags, int fd, int offset, struct file *file){
  if (vma_index < 0 || vma_index >= MAXVMA)
     return -1;
   vma->addr[vma_index] = addr;
   vma->length[vma_index] = length;
+  vma->end_addr[vma_index] = end_addr; 
   vma->prot[vma_index] = prot;
   vma->flags[vma_index] = flags;
   vma->fd[vma_index] = fd;
@@ -112,6 +114,7 @@ vma_copy(struct proc *proc_src, struct proc *proc_dst){
     uvmcopypages(vma_src->addr[i], vma_src->addr[i] + vma_src->length[i], proc_src->pagetable, proc_dst->pagetable); 
     vma_dst->addr[i] = vma_src->addr[i];
     vma_dst->length[i] = vma_src->length[i];
+    vma_dst->end_addr[i] = vma_src->end_addr[i];
     vma_dst->prot[i] = vma_src->prot[i];
     vma_dst->flags[i] = vma_src->flags[i];
     vma_dst->fd[i] = vma_src->fd[i];

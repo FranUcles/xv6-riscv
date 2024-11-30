@@ -61,9 +61,6 @@ exec(char *path, char **argv)
   program_file->writable = 0;
   program_file->ip = ip;
   idup(ip);
-  // Allocate a new file descriptor
-  // int fd = fdalloc(program_file); 
-  int fd = 0; // TODO: CHECK IF THIS IS LEGAL
 
   // Load program into memory.
   for(i=0, off=elf.phoff; i<elf.phnum; i++, off+=sizeof(ph)){
@@ -87,7 +84,9 @@ exec(char *path, char **argv)
     // Create the vma of that segment
     int perms = flags2perm(ph.flags);
     int prots = ((perms & PTE_W) == 0 ? 0 : PROT_WRITE) | ((perms & PTE_X) == 0 ? 0 : PROT_EXEC);
-    int result = mmap(ph.vaddr, ph.memsz, PROT_READ | prots, MAP_PRIVATE, fd, program_file, ph.off, 1); 
+    // Calculate the new end_addr
+    uint64 end_addr = PGROUNDUP(ph.vaddr + ph.memsz);
+    int result = mmap(ph.vaddr, ph.filesz, end_addr, PROT_READ | prots, MAP_PRIVATE, 0, program_file, ph.off, 1); 
     if (result != ph.vaddr)
       goto bad;
     /*

@@ -12,6 +12,7 @@
 struct vma {
   uint64 addr[MAXVMA];
   uint64 length[MAXVMA];
+  uint64 end_addr[MAXVMA];
   int prot[MAXVMA];
   int flags[MAXVMA];
   int fd[MAXVMA];

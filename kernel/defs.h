@@ -41,7 +41,7 @@ void            fileinit(void);
 int             fileread(struct file*, uint64, int n);
 int             filestat(struct file*, uint64 addr);
 int             filewrite(struct file*, uint64, int n);
-uint64          mmap(uint64 addr, int length, int prot, int flags, int fd, struct file* file, int offset, int force_addr);
+uint64          mmap(uint64 addr, int length, uint64 end_addr, int prot, int flags, int fd, struct file* file, int offset, int force_addr);
 int             munmap(uint64 addr, int length);    
 
 // fs.c
@@ -126,7 +126,7 @@ void            vma_free(struct vma *vma, struct proc * p);
 int             vma_find(struct vma *vma, uint64 addr);
 int             vma_find_free(struct vma *vma);
 uint64          vma_get_new_addr(struct vma *vma, int length);
-int             vma_fill_vma(struct vma *vma, int vma_index, uint64 addr, int length, int prot, int flags, int fd, int offset, struct file *file);
+int             vma_fill_vma(struct vma *vma, int vma_index, uint64 addr, int length, uint64 end_addr, int prot, int flags, int fd, int offset, struct file *file);
 int             vma_free_pages(struct vma *vma, int index, uint64 init_va, uint64 end_va, pagetable_t pagetable);
 void            vma_copy(struct proc* proc_src, struct proc* proc_dst);
 

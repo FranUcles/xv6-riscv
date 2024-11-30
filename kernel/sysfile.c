@@ -541,7 +541,7 @@ sys_mmap(void){
     if (!can_write_file && can_write_map)
       return -1;
   }
-  uint64 correct_mapped = mmap(addr, length, prot, flags, fd, mf, offset, 0);
+  uint64 correct_mapped = mmap(addr, length, PGROUNDUP(addr + length), prot, flags, fd, mf, offset, 0);
   return correct_mapped;
 }
 
