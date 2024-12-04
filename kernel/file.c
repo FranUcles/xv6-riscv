@@ -187,9 +187,12 @@ mmap(uint64 addr, int length, uint64 end_addr, int prot, int flags, int fd, stru
  // In case there is no free VMA, we return error 
  if (free_vma_index == -1)
     return -1;
- if (addr == 0 && force_addr == 0)
+ if (addr == 0 && force_addr == 0){
     // Select the new virtual address
     addr = vma_get_new_addr(&(p->vma_list), length); 
+    // Since we have a new addr, we need a new end_addr 
+    end_addr = PGROUNDUP(addr + length);
+  }
  // We fill the VMA 
  int correct_filled = vma_fill_vma(&(p->vma_list), free_vma_index, addr, length, end_addr, prot, flags, fd, offset, file);
  if (correct_filled == -1)

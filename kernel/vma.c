@@ -9,7 +9,7 @@
 void
 vma_free(struct vma * vma, struct proc * p){
   for (int i = 0; i < MAXVMA; i++){
-    vma_free_pages(vma, i, vma->addr[i], vma->addr[i] + vma->length[i], p->pagetable);
+    vma_free_pages(vma, i, vma->addr[i], vma->end_addr[i], p->pagetable);
     vma->addr[i] = 0;
     vma->length[i] = 0;
     vma->end_addr[i] = 0;

@@ -187,7 +187,7 @@ pagetable_t     uvmcreate(void);
 void            uvmfirst(pagetable_t, uchar *, uint);
 uint64          uvmalloc(pagetable_t, uint64, uint64, int);
 uint64          uvmdealloc(pagetable_t, uint64, uint64);
-int             uvmcopy(pagetable_t, pagetable_t, uint64);
+int             uvmcopy(pagetable_t, pagetable_t, uint64, struct vma*);
 void            uvmfree(pagetable_t, uint64);
 void            uvmunmap(pagetable_t, uint64, uint64, int);
 void            uvmunwrite(pagetable_t, uint64);

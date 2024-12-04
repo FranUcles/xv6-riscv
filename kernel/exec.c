@@ -76,10 +76,12 @@ exec(char *path, char **argv)
       goto bad;
     // Instead of allocating the physical pages, we just move the sz pointer 
     /*
+    int sz1 = 0; 
     if((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz, flags2perm(ph.flags))) == 0)
       goto bad;
     sz = sz1;
-    */
+    */ 
+    
     sz = ph.vaddr + ph.memsz;
     // Create the vma of that segment
     int perms = flags2perm(ph.flags);
@@ -89,10 +91,10 @@ exec(char *path, char **argv)
     int result = mmap(ph.vaddr, ph.filesz, end_addr, PROT_READ | prots, MAP_PRIVATE, 0, program_file, ph.off, 1); 
     if (result != ph.vaddr)
       goto bad;
-    /*
+    /* 
     if(loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
       goto bad;
-    */
+    */ 
   }
   fileclose(program_file);
   iunlockput(ip);
@@ -191,4 +193,4 @@ loadseg(pagetable_t pagetable, uint64 va, struct inode *ip, uint offset, uint sz
   
   return 0;
 }
-*/
+*/ 

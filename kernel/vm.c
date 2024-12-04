@@ -321,7 +321,7 @@ uvmfree(pagetable_t pagetable, uint64 sz)
 // returns 0 on success, -1 on failure.
 // frees any allocated pages on failure.
 int
-uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
+uvmcopy(pagetable_t old, pagetable_t new, uint64 sz, struct vma* new_vma_list)
 {
   pte_t *pte;
   uint64 pa, i;
@@ -329,10 +329,12 @@ uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
   char *mem;
 
   for(i = 0; i < sz; i += PGSIZE){
+    int vma_index = vma_find(new_vma_list, i);
+    if (vma_index != -1)
+      continue;
     if((pte = walk(old, i, 0)) == 0)
       panic("uvmcopy: pte should exist");
     if((*pte & PTE_V) == 0){
-      // TODO: CHECK IF THERE IS ANOTHER OPTION
       continue;
     }
     pa = PTE2PA(*pte);

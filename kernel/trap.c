@@ -120,15 +120,15 @@ usertrap(void)
         pte_t* page_enty = walk(p->pagetable, fault_addr, 0);
         // TODO: CHECK IF IT IS ENOUGH THIS AND WE DO NOT NEED ANYTHING ELSE
         (*page_enty) = *page_enty | PTE_W;
+        kfree((void *)new_physical_addr);
         goto finished;
       }
-      if (copyin(p->pagetable, (char *)new_physical_addr, fault_addr, PGSIZE) == -1){
+      if (copyin(p->pagetable, (char *)new_physical_addr, fault_page_addr, PGSIZE) == -1){
         setkilled(p);
         goto finished;
       }
       // Once we have filled the new page, we drecrease the referneces and
       // we need to unmap the old physical address
-      decref((void *)current_pa);
       uvmunmap(p->pagetable, fault_page_addr, 1, 1);
     }
     if (mappages(p->pagetable, fault_page_addr, PGSIZE, new_physical_addr, perms) != 0){
