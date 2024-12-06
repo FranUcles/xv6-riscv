@@ -607,7 +607,8 @@ sleep(void *chan, struct spinlock *lk)
 
   acquire(&p->lock);  //DOC: sleeplock1
   release(lk);
-
+  // In case there are others locks, we free them all
+  temporal_release_locks();
   // Go to sleep.
   p->chan = chan;
   p->state = SLEEPING;
@@ -620,6 +621,8 @@ sleep(void *chan, struct spinlock *lk)
   // Reacquire original lock.
   release(&p->lock);
   acquire(lk);
+  // Reacquiere all the other locks
+  reacquire_locks();
 }
 
 // Wake up all processes sleeping on chan.
@@ -751,5 +754,72 @@ fillpstats(struct pstat * pstats)
     pstats->tickets[i] = proc[i].tickets;
     pstats->pid[i] = proc[i].pid;
     pstats->ticks[i] = proc[i].ticks; 
+  }
+}
+
+void
+add_acquired_lock(struct spinlock *lk){
+  struct proc *p  = myproc();
+  if (lk == &(p->lock))
+    return;
+  int free_space = -1;
+  for (int i = 0; i < MAXLOCKS; i++){
+    if (p->acquired_locks[i] == lk)
+      return;
+    if (p->acquired_locks[i] == 0 && free_space == -1){
+      free_space = i;
+    }
+  }
+  if (free_space != -1){
+    p->acquired_locks[free_space] = lk;
+    return;
+  }
+  panic("max acquired_locks");
+}
+
+void
+remove_acquired_lock(struct spinlock *lk){
+  struct proc *p  = myproc();
+  if (lk == &(p->lock))
+    return;
+  for (int i = 0; i < MAXLOCKS; i++){
+    if (p->acquired_locks[i] == lk){
+      p->acquired_locks[i] = 0;
+      return;
+    }
+  }
+  panic("lock not acquired");
+}
+
+void 
+reacquire_locks(){
+  struct proc *p  = myproc();
+  for (int i = 0; i < MAXLOCKS; i++){
+    if (p->acquired_locks[i] != 0){
+      if (p->acquired_locks[i]->locked == 0)
+        acquire(p->acquired_locks[i]);
+    }
+  }
+}
+
+void 
+release_locks(){
+  struct proc *p  = myproc();
+  for (int i = 0; i < MAXLOCKS; i++){
+    if (p->acquired_locks[i] != 0){
+      if (p->acquired_locks[i]->locked == 1)
+        release(p->acquired_locks[i]);
+    }
+  }
+}
+
+void
+temporal_release_locks(){
+  struct proc *p  = myproc();
+  for (int i = 0; i < MAXLOCKS; i++){
+    if (p->acquired_locks[i] != 0){
+      if (p->acquired_locks[i]->locked == 1)
+        release_temp(p->acquired_locks[i]);
+    }
   }
 }

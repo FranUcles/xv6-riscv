@@ -33,8 +33,10 @@ exec(char *path, char **argv)
   pagetable_t pagetable = 0, oldpagetable;
   struct proc *p = myproc();
 
-  // Free the vma_list of the process
-  vma_free(&(p->vma_list), p);
+  struct vma vma_checkpoint;
+
+  vma_superficial_copy(&(p->vma_list), &vma_checkpoint);
+  vma_clear(&(p->vma_list));
 
   begin_op();
 
@@ -89,7 +91,7 @@ exec(char *path, char **argv)
     // Calculate the new end_addr
     uint64 end_addr = PGROUNDUP(ph.vaddr + ph.memsz);
     int result = mmap(ph.vaddr, ph.filesz, end_addr, PROT_READ | prots, MAP_PRIVATE, 0, program_file, ph.off, 1); 
-    if (result != ph.vaddr)
+    if (result!= ph.vaddr)
       goto bad;
     /* 
     if(loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
@@ -148,7 +150,9 @@ exec(char *path, char **argv)
     if(*s == '/')
       last = s+1;
   safestrcpy(p->name, last, sizeof(p->name));
-    
+   
+  // Free the vma_list 
+  vma_free(&vma_checkpoint, p);
   // Commit to the user image.
   oldpagetable = p->pagetable;
   p->pagetable = pagetable;
@@ -166,6 +170,7 @@ exec(char *path, char **argv)
     iunlockput(ip);
     end_op();
   }
+  p->vma_list = vma_checkpoint;
   return -1;
 }
 /*

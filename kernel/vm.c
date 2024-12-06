@@ -397,8 +397,10 @@ uvm_completemap(pagetable_t pagetable, uint64 page_va){
   struct file* mapped_file = p->vma_list.file[valid_vma];
   begin_op();
   ilock(mapped_file->ip);
+  //add_acquired_lock(&(mapped_file->ip->lock));
   readi(mapped_file->ip, 0, new_physical_addr, p->vma_list.offset[valid_vma] + page_offset, PGSIZE);
   iunlock(mapped_file->ip);
+  //remove_acquired_lock(&(mapped_file->ip->lock));
   end_op();
   return 0;
 bad:
@@ -452,8 +454,37 @@ copyout(pagetable_t pagetable, uint64 dstva, char *src, uint64 len)
         return -1;
       pte = walk(pagetable, va0, 0);
     }
-    if((*pte & PTE_U) == 0 || (*pte & PTE_W) == 0)
+    if((*pte & PTE_U) == 0)
       return -1;
+    // Consider the case where the write permission has been
+    // deleted due to shared paged 
+    if ((*pte & PTE_W) == 0){
+      struct proc * p = myproc();
+      int vma_index = vma_find(&(p->vma_list), va0);
+      if (vma_index == -1)
+        return -1;
+      int can_write = (p->vma_list.prot[vma_index] & PROT_WRITE) != 0;
+      if (!can_write)
+        return -1;
+      uint64 current_pa = PTE2PA(*pte);
+      // Check of we are the last reference 
+      if (getref((void *)current_pa) == 1)
+        (*pte) = *pte | PTE_W;
+      else {
+        // Get a new physical page
+        uint64 new_physical_addr = (uint64) kalloc();
+        if (new_physical_addr == 0)
+          return -1;
+        // Copy the page 
+        memmove((char *) new_physical_addr, (void *) current_pa, PGSIZE);
+        uvmunmap(p->pagetable, va0, 1, 1);
+        if (mappages(p->pagetable, va0, PGSIZE, new_physical_addr, PTE_V | PTE_U | PTE_R | p->vma_list.prot[vma_index]) != 0){
+          kfree((void *) new_physical_addr);
+          return -1;
+        }
+        pte = walk(pagetable, va0, 0);
+      }
+    }
     pa0 = PTE2PA(*pte);
     n = PGSIZE - (dstva - va0);
     if(n > len)

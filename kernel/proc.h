@@ -86,6 +86,8 @@ struct trapframe {
 
 enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
+#define MAXLOCKS 16
+
 // Per-process state
 struct proc {
   struct spinlock lock;
@@ -112,5 +114,6 @@ struct proc {
   uint64 tickets;	             // Process tickets
   uint64 ticks;                // Process tickts 
   struct vma vma_list;         // VMA 
+  struct spinlock * acquired_locks[MAXLOCKS];  // List of acquiered_locks 
 };
 #endif

@@ -120,6 +120,11 @@ int             either_copyout(int user_dst, uint64 dst, void *src, uint64 len);
 int             either_copyin(void *dst, int user_src, uint64 src, uint64 len);
 void            procdump(void);
 void            fillpstats(struct pstat *pstats);
+void            add_acquired_lock(struct spinlock *);
+void            remove_acquired_lock(struct spinlock *);
+void            reacquire_locks();
+void            release_locks();
+void            temporal_release_locks();
 
 // vma.c 
 void            vma_free(struct vma *vma, struct proc * p);
@@ -129,6 +134,8 @@ uint64          vma_get_new_addr(struct vma *vma, int length);
 int             vma_fill_vma(struct vma *vma, int vma_index, uint64 addr, int length, uint64 end_addr, int prot, int flags, int fd, int offset, struct file *file);
 int             vma_free_pages(struct vma *vma, int index, uint64 init_va, uint64 end_va, pagetable_t pagetable);
 void            vma_copy(struct proc* proc_src, struct proc* proc_dst);
+void            vma_clear(struct vma *vma);
+void            vma_superficial_copy(struct vma *vma_src, struct vma *vma_dst);
 
 // swtch.S
 void            swtch(struct context*, struct context*);
@@ -138,6 +145,7 @@ void            acquire(struct spinlock*);
 int             holding(struct spinlock*);
 void            initlock(struct spinlock*, char*);
 void            release(struct spinlock*);
+void            release_temp(struct spinlock*);
 void            push_off(void);
 void            pop_off(void);
 

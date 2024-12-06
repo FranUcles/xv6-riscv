@@ -125,3 +125,33 @@ vma_copy(struct proc *proc_src, struct proc *proc_dst){
   }
   vma_dst->bottom_addr = vma_src->bottom_addr;
 }
+
+void
+vma_clear(struct vma * vma){
+  for (int i = 0; i < MAXVMA; i++){
+    vma->addr[i] = 0;
+    vma->length[i] = 0;
+    vma->end_addr[i] = 0;
+    vma->prot[i] = 0;
+    vma->flags[i] = 0;
+    vma->fd[i] = 0;
+    vma->offset[i] = 0;
+    vma->file[i] = 0;
+  }
+  vma->bottom_addr = INITIAL_BOTTOM_ADDR;
+}
+
+void
+vma_superficial_copy(struct vma * vma_src, struct vma *vma_dst){
+  for (int i = 0; i < MAXVMA; i++){
+    vma_dst->addr[i] = vma_src->addr[i];
+    vma_dst->length[i] = vma_src->length[i];
+    vma_dst->end_addr[i] = vma_src->end_addr[i];
+    vma_dst->prot[i] = vma_src->prot[i];
+    vma_dst->flags[i] = vma_src->flags[i];
+    vma_dst->fd[i] = vma_src->fd[i];
+    vma_dst->offset[i] = vma_src->offset[i];
+    vma_dst->file[i] = vma_src->file[i];
+  }
+  vma_dst->bottom_addr = vma_src->bottom_addr;
+}
