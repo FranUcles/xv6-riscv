@@ -6,6 +6,7 @@
 #include "sleeplock.h"
 #include "fs.h"
 #include "buf.h"
+#include "proc.h"
 
 // Simple logging that allows concurrent FS system calls.
 //
@@ -122,6 +123,11 @@ recover_from_log(void)
   write_head(); // clear the log
 }
 
+int
+op_in_progress(){
+  return myproc()->performing_fs_call == 1;
+}
+
 // called at the start of each FS system call.
 void
 begin_op(void)
@@ -135,6 +141,7 @@ begin_op(void)
       sleep(&log, &log.lock);
     } else {
       log.outstanding += 1;
+      myproc()->performing_fs_call = 1;
       release(&log.lock);
       break;
     }
@@ -150,6 +157,7 @@ end_op(void)
 
   acquire(&log.lock);
   log.outstanding -= 1;
+  myproc()->performing_fs_call = 0;
   if(log.committing)
     panic("log.committing");
   if(log.outstanding == 0){

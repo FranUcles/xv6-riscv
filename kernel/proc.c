@@ -174,6 +174,7 @@ freeproc(struct proc *p)
   p->killed = 0;
   p->xstate = 0;
   p->state = UNUSED;
+  p->performing_fs_call = 0;
 }
 // Create a user page table for a given process, with no user memory,
 // but with trampoline and trapframe pages.
@@ -822,4 +823,15 @@ temporal_release_locks(){
         release_temp(p->acquired_locks[i]);
     }
   }
+}
+
+int 
+lock_acquired(struct spinlock * lk){
+  struct proc * p = myproc();
+  for (int i = 0; i < MAXLOCKS; i++){
+    if (p->acquired_locks[i] == lk){
+      return 1;
+    }
+  }
+  return 0;
 }

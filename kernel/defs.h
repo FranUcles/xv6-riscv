@@ -82,6 +82,7 @@ void            initlog(int, struct superblock*);
 void            log_write(struct buf*);
 void            begin_op(void);
 void            end_op(void);
+int             op_in_progress();
 
 // pipe.c
 int             pipealloc(struct file**, struct file**);
@@ -125,6 +126,7 @@ void            remove_acquired_lock(struct spinlock *);
 void            reacquire_locks();
 void            release_locks();
 void            temporal_release_locks();
+int             lock_acquired(struct spinlock * lk);
 
 // vma.c 
 void            vma_free(struct vma *vma, struct proc * p);

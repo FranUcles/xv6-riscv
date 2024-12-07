@@ -115,5 +115,6 @@ struct proc {
   uint64 ticks;                // Process tickts 
   struct vma vma_list;         // VMA 
   struct spinlock * acquired_locks[MAXLOCKS];  // List of acquiered_locks 
+  int performing_fs_call;     // To determine if an file system call is being executed
 };
 #endif

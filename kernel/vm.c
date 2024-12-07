@@ -189,11 +189,8 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
   for(a = va; a < va + npages*PGSIZE; a += PGSIZE){
     if((pte = walk(pagetable, a, 0)) == 0)
       panic("uvmunmap: walk");
-    if((*pte & PTE_V) == 0){
-      // TODO: CHECK IS THERE IS ANOTHER OPTION
+    if((*pte & PTE_V) == 0)
       continue;
-      //panic("uvmunmap: not mapped");
-    }
     if(PTE_FLAGS(*pte) == PTE_V)
       panic("uvmunmap: not a leaf");
     if(do_free){
@@ -329,14 +326,10 @@ uvmcopy(pagetable_t old, pagetable_t new, uint64 sz, struct vma* new_vma_list)
   char *mem;
 
   for(i = 0; i < sz; i += PGSIZE){
-    int vma_index = vma_find(new_vma_list, i);
-    if (vma_index != -1)
-      continue;
     if((pte = walk(old, i, 0)) == 0)
       panic("uvmcopy: pte should exist");
-    if((*pte & PTE_V) == 0){
+    if((*pte & PTE_V) == 0)
       continue;
-    }
     pa = PTE2PA(*pte);
     flags = PTE_FLAGS(*pte);
     if((mem = kalloc()) == 0)
@@ -359,6 +352,11 @@ uvmcopypages(uint64 init_va, uint64 end_va, pagetable_t src, pagetable_t dst){
     uint64 pa = walkaddr(src, page);
     if (pa == 0)
       continue;
+    // We obtaint the current pa of the dst pagetable 
+    uint64 dstpa = walkaddr(dst, page);
+    // If it is in used, we free it 
+    if (dstpa != 0)
+      kfree((void *)dstpa);
     // We get the entry of the src pagetable for page (we know it exists)
     pte_t* page_entry_src = walk(src, page, 0);
     // We get the direction of the pte corresponding to the va in the dst
@@ -395,13 +393,14 @@ uvm_completemap(pagetable_t pagetable, uint64 page_va){
   // Read the content of the file in the VMA
   int page_offset = page_va - p->vma_list.addr[valid_vma];
   struct file* mapped_file = p->vma_list.file[valid_vma];
-  begin_op();
+  int already_in_op = op_in_progress();
+  if (already_in_op == 0)
+    begin_op();
   ilock(mapped_file->ip);
-  //add_acquired_lock(&(mapped_file->ip->lock));
   readi(mapped_file->ip, 0, new_physical_addr, p->vma_list.offset[valid_vma] + page_offset, PGSIZE);
   iunlock(mapped_file->ip);
-  //remove_acquired_lock(&(mapped_file->ip->lock));
-  end_op();
+  if (already_in_op == 0)
+    end_op();
   return 0;
 bad:
   return -1;
