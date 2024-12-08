@@ -118,12 +118,12 @@ usertrap(void)
       // We check the case we are the last process referencing the page
       if (getref((void *)current_pa) == 1){
         pte_t* page_enty = walk(p->pagetable, fault_addr, 0);
-        // TODO: CHECK IF IT IS ENOUGH THIS AND WE DO NOT NEED ANYTHING ELSE
         (*page_enty) = *page_enty | PTE_W;
         kfree((void *)new_physical_addr);
         goto finished;
       }
       if (copyin(p->pagetable, (char *)new_physical_addr, fault_page_addr, PGSIZE) == -1){
+        kfree((void *)new_physical_addr);
         setkilled(p);
         goto finished;
       }
@@ -132,6 +132,7 @@ usertrap(void)
       uvmunmap(p->pagetable, fault_page_addr, 1, 1);
     }
     if (mappages(p->pagetable, fault_page_addr, PGSIZE, new_physical_addr, perms) != 0){
+      kfree((void *)new_physical_addr);
       setkilled(p);
       goto finished;
     }
