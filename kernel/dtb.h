@@ -25,6 +25,8 @@ extern int cpu_count;
 
 // Variable para almacenar la dirección base del UART
 extern uint64 uart_base;
+// Variable para almacenar el IRQ del UART
+extern uint64 uart_irq;
 
 // Declaración de la función principal de inicialización del Device Tree
 void dtb_init(void);

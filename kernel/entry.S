@@ -5,6 +5,9 @@
 .section .text
 .global _entry
 _entry:
+        # Save the address of the dtb
+        la t0, dtb_pa
+        sd a1, 0(t0)
         # set up a stack for C.
         # stack0 is declared in start.c,
         # with a 4096-byte stack per CPU.
