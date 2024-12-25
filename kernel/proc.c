@@ -297,7 +297,7 @@ fork(void)
   }
 
   // Copy user memory from parent to child.
-  if(uvmcopy(p->pagetable, np->pagetable, p->sz, &(p->vma_list)) < 0){
+  if(uvmcopy(p->pagetable, np->pagetable, p->sz) < 0){
     freeproc(np);
     release(&np->lock);
     return -1;
@@ -769,6 +769,7 @@ add_acquired_lock(struct spinlock *lk){
       return;
     if (p->acquired_locks[i] == 0 && free_space == -1){
       free_space = i;
+      break;
     }
   }
   if (free_space != -1){
