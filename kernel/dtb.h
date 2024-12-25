@@ -2,7 +2,7 @@
 
 #ifndef _DTB_H_
 #define _DTB_H_
-
+#ifndef __ASSEMBLER__
 #include "types.h"
 
 #define MAX_CPUS 8 // Define el número máximo de harts soportados
@@ -44,5 +44,5 @@ uint strlen_custom(const char *s);
 
 // Declaración de funciones de inicialización de harts
 void init_secondary_hart(void);
-
+#endif
 #endif // _DTB_H_

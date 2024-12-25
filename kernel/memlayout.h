@@ -1,3 +1,5 @@
+#ifndef _MEMLAYOUT_H_
+#define _MEMLAYOUT_H_
 #include "dtb.h"
 // Physical memory layout
 
@@ -58,3 +60,4 @@
 //   TRAPFRAME (p->trapframe, used by the trampoline)
 //   TRAMPOLINE (the same page as in the kernel)
 #define TRAPFRAME (TRAMPOLINE - PGSIZE)
+#endif
