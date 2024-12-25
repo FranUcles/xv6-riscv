@@ -9,7 +9,7 @@
 #include "fcntl.h"
 #include "file.h"
 
-//static int loadseg(pde_t *, uint64, struct inode *, uint, uint);
+static int create_seg_vma(int, uint64, uint64, struct file *, uint64, uint64);
 
 int flags2perm(int flags)
 {
@@ -76,27 +76,11 @@ exec(char *path, char **argv)
       goto bad;
     if(ph.vaddr % PGSIZE != 0)
       goto bad;
-    // Instead of allocating the physical pages, we just move the sz pointer 
-    /*
-    int sz1 = 0; 
-    if((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz, flags2perm(ph.flags))) == 0)
-      goto bad;
-    sz = sz1;
-    */ 
-    
+    // Instead of allocating the physical pages, we just move the sz pointer     
     sz = ph.vaddr + ph.memsz;
     // Create the vma of that segment
-    int perms = flags2perm(ph.flags);
-    int prots = ((perms & PTE_W) == 0 ? 0 : PROT_WRITE) | ((perms & PTE_X) == 0 ? 0 : PROT_EXEC);
-    // Calculate the new end_addr
-    uint64 end_addr = PGROUNDUP(ph.vaddr + ph.memsz);
-    int result = mmap(ph.vaddr, ph.filesz, end_addr, PROT_READ | prots, MAP_PRIVATE, 0, program_file, ph.off, 1); 
-    if (result!= ph.vaddr)
+    if (create_seg_vma(ph.flags, ph.vaddr, ph.memsz, program_file, ph.filesz, ph.off) != ph.vaddr)
       goto bad;
-    /* 
-    if(loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
-      goto bad;
-    */ 
   }
   fileclose(program_file);
   iunlockput(ip);
@@ -173,29 +157,12 @@ exec(char *path, char **argv)
   p->vma_list = vma_checkpoint;
   return -1;
 }
-/*
-// Load a program segment into pagetable at virtual address va.
-// va must be page-aligned
-// and the pages from va to va+sz must already be mapped.
-// Returns 0 on success, -1 on failure.
-static int
-loadseg(pagetable_t pagetable, uint64 va, struct inode *ip, uint offset, uint sz)
-{
-  uint i, n;
-  uint64 pa;
 
-  for(i = 0; i < sz; i += PGSIZE){
-    pa = walkaddr(pagetable, va + i);
-    if(pa == 0)
-      panic("loadseg: address should exist");
-    if(sz - i < PGSIZE)
-      n = sz - i;
-    else
-      n = PGSIZE;
-    if(readi(ip, 0, (uint64)pa, offset+i, n) != n)
-      return -1;
-  }
-  
-  return 0;
+static int 
+create_seg_vma(int flags, uint64 vaddr, uint64 size, struct file * program_file, uint64 filesz, uint64 offset){
+  int perms = flags2perm(flags);
+  int prots = ((perms & PTE_W) == 0 ? 0 : PROT_WRITE) | ((perms & PTE_X) == 0 ? 0 : PROT_EXEC);
+  // Calculate the new end_addr
+  uint64 end_addr = PGROUNDUP(vaddr + size);
+  return mmap(vaddr, filesz, end_addr, PROT_READ | prots, MAP_PRIVATE, 0, program_file, offset, 1); 
 }
-*/ 
