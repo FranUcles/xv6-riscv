@@ -799,7 +799,7 @@ reacquire_locks(){
   for (int i = 0; i < MAXLOCKS; i++){
     if (p->acquired_locks[i] != 0){
       if (p->acquired_locks[i]->locked == 0)
-        acquire(p->acquired_locks[i]);
+        acquire_no_add(p->acquired_locks[i]);
     }
   }
 }
