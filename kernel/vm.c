@@ -390,7 +390,8 @@ uvm_completemap(pagetable_t pagetable, uint64 page_va){
   memset((char *)new_physical_addr, 0, PGSIZE);
   // Set the physical page into the virtual address space
   int perms = PTE_V | PTE_U | PTE_R | (can_write == 1 ? PTE_W : 0) | (can_execute == 1 ? PTE_X : 0);
-  mappages(p->pagetable, page_va, PGSIZE, new_physical_addr, perms);
+  if (mappages(p->pagetable, page_va, PGSIZE, new_physical_addr, perms) == -1)
+    goto bad;
   // Read the content of the file in the VMA
   int page_offset = page_va - p->vma_list.addr[valid_vma];
   struct file* mapped_file = p->vma_list.file[valid_vma];
