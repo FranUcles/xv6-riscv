@@ -130,6 +130,13 @@ usertrap(void)
       // Once we have filled the new page, we drecrease the referneces and
       // we need to unmap the old physical address
       uvmunmap(p->pagetable, fault_page_addr, 1, 1);
+      // Now, we map the new page into the pagetable
+      if (mappages(p->pagetable, fault_page_addr, PGSIZE, new_physical_addr, perms) != 0){
+        kfree((void *)new_physical_addr);
+        setkilled(p);
+        goto finished;
+      }
+      goto finished;
     }
     if (mappages(p->pagetable, fault_page_addr, PGSIZE, new_physical_addr, perms) != 0){
       kfree((void *)new_physical_addr);
