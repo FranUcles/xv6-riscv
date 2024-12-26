@@ -125,7 +125,7 @@ recover_from_log(void)
 
 int
 op_in_progress(){
-  return myproc()->performing_fs_call == 1;
+  return myproc()->performing_fs_call >= 1;
 }
 
 // called at the start of each FS system call.
@@ -141,7 +141,7 @@ begin_op(void)
       sleep(&log, &log.lock);
     } else {
       log.outstanding += 1;
-      myproc()->performing_fs_call = 1;
+      myproc()->performing_fs_call++;
       release(&log.lock);
       break;
     }
@@ -157,7 +157,7 @@ end_op(void)
 
   acquire(&log.lock);
   log.outstanding -= 1;
-  myproc()->performing_fs_call = 0;
+  myproc()->performing_fs_call--;
   if(log.committing)
     panic("log.committing");
   if(log.outstanding == 0){
