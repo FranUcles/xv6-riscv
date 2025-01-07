@@ -197,7 +197,6 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
     if(do_free){
       uint64 pa = PTE2PA(*pte);
       int more_ref = getref((void*)pa) > 1;
-    // TODO: CHECK IS THIS IS LEGAL
       if (more_ref)
         decref((void*)pa);
       else 
@@ -375,7 +374,6 @@ int
 uvm_completemap(pagetable_t pagetable, uint64 page_va){
   if (page_va % PGSIZE != 0)
     goto bad;
-  // TODO: CAN WE MAKE SURE THIS FUNCTION WILL BE CALLED ONLY within
   // THE PAGETABLE OF THE CURRENT THREAD?????
   struct proc *p = myproc();
   int valid_vma = vma_find(&(p->vma_list), page_va);

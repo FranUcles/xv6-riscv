@@ -236,7 +236,6 @@ munmap(uint64 addr, int length){
     uint64 addr_p2 = page_addr + unmapped_length;
     int length_p2 = p->vma_list.addr[vma_index] - length_p1 - unmapped_length;
     int offset_p2 = p->vma_list.offset[vma_index] + length_p1 + unmapped_length;
-    // TODO: FIX THE END_ADDR 
     uint64 end_addr_p2 = PGROUNDUP(addr_p2 + length_p2);
     // Fill the second part of the vma 
     vma_fill_vma(&(p->vma_list), new_vma_index, addr_p2, length_p2, end_addr_p2, p->vma_list.prot[vma_index], 

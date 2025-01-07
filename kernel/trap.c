@@ -76,7 +76,6 @@ usertrap(void)
     uint64 fault_addr = r_stval();
     // Check if the address is valid
     // We assume the part below sz is always mapped
-    // TODO: CHECK THIS IS ALWAYS TRUE 
     if (fault_addr < 0){
       setkilled(p);
       goto finished;
